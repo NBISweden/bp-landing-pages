@@ -1,0 +1,9 @@
+metadata_s3:
+  url: "http://127.0.0.1:9000"
+  accesskey: "myaccesskey"
+  secretkey: "mysecretkey"
+  region: "us-east-1"
+  bucket: "test/"
+  web_metadata_folder: "web/content/"
+  
+
