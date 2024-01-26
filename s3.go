@@ -18,7 +18,7 @@ type metadata_backend struct {
 	Bucket string
 }
 
-func connect_to_s3(mconf metadata_S3Config) *metadata_backend {
+func connect_to_s3(mconf metadata_s3_config) *metadata_backend {
 	httpClient := awshttp.NewBuildableClient().WithTransportOptions(func(tr *http.Transport) {
 		if tr.TLSClientConfig == nil {
 			tr.TLSClientConfig = &tls.Config{}

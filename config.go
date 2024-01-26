@@ -7,14 +7,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-func get_config() metadata_S3Config {
+func get_config() metadata_s3_config {
 	parseConfig()
 	s3_conf := configS3Storage()
 	return s3_conf
 
 }
 
-type metadata_S3Config struct {
+type metadata_s3_config struct {
 	URL                 string
 	Port                int
 	AccessKey           string
@@ -26,14 +26,14 @@ type metadata_S3Config struct {
 	Web_metadata_folder string
 }
 
-func configS3Storage() metadata_S3Config {
-	s3 := metadata_S3Config{}
+func configS3Storage() metadata_s3_config {
+	s3 := metadata_s3_config{}
 	s3.URL = viper.GetString("metadata_s3.url")
 	s3.AccessKey = viper.GetString("metadata_s3.accesskey")
 	s3.SecretKey = viper.GetString("metadata_s3.secretkey")
 	s3.Bucket = viper.GetString("metadata_s3.bucket")
 	s3.Port = 9000
-	s3.Web_metadata_folder = viper.GetString("metadata_s3.Web_metadata_folder")
+	s3.Web_metadata_folder = viper.GetString("metadata_s3.web_metadata_folder")
 	if viper.IsSet("s3.port") {
 		s3.Port = viper.GetInt("metadata_s3.port")
 	}
