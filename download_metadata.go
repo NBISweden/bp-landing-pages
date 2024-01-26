@@ -11,14 +11,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func metadata_downloader(m_client *metadata_backend) {
+func metadataDownloader(Metadataclient *MetadataBackend) {
 
 	var (
-		Bucket         = m_client.Bucket // Download from this bucket
-		Prefix         = "datasets/"     // Using this key prefix
-		LocalDirectory = "web/content/"  // Into this directory
+		Bucket         = Metadataclient.Bucket // Download from this bucket
+		Prefix         = "datasets/"           // Using this key prefix
+		LocalDirectory = "web/content/"        // Into this directory
 	)
-	client := m_client.Client
+	client := Metadataclient.Client
 
 	manager := manager.NewDownloader(client)
 	paginator := s3.NewListObjectsV2Paginator(client, &s3.ListObjectsV2Input{

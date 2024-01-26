@@ -7,47 +7,47 @@ import (
 	"github.com/spf13/viper"
 )
 
-func get_config() metadata_s3_config {
+func getConfig() MetadataS3Config {
 	parseConfig()
-	s3_conf := configS3Storage()
-	return s3_conf
+	S3Conf := configS3Storage()
+	return S3Conf
 
 }
 
-type metadata_s3_config struct {
-	URL                 string
-	Port                int
-	AccessKey           string
-	SecretKey           string
-	Bucket              string
-	Region              string
-	Chunksize           int
-	Cacert              string
-	Web_metadata_folder string
+type MetadataS3Config struct {
+	URL               string
+	Port              int
+	AccessKey         string
+	SecretKey         string
+	Bucket            string
+	Region            string
+	Chunksize         int
+	Cacert            string
+	WebMetadataFolder string
 }
 
-func configS3Storage() metadata_s3_config {
-	s3 := metadata_s3_config{}
-	s3.URL = viper.GetString("metadata_s3.url")
-	s3.AccessKey = viper.GetString("metadata_s3.accesskey")
-	s3.SecretKey = viper.GetString("metadata_s3.secretkey")
-	s3.Bucket = viper.GetString("metadata_s3.bucket")
+func configS3Storage() MetadataS3Config {
+	s3 := MetadataS3Config{}
+	s3.URL = viper.GetString("S3MetadataBucket.url")
+	s3.AccessKey = viper.GetString("S3MetadataBucket.accesskey")
+	s3.SecretKey = viper.GetString("S3MetadataBucket.secretkey")
+	s3.Bucket = viper.GetString("S3MetadataBucket.bucket")
 	s3.Port = 9000
-	s3.Web_metadata_folder = viper.GetString("metadata_s3.web_metadata_folder")
+	s3.WebMetadataFolder = viper.GetString("S3MetadataBucket.WebMetadataFolder")
 	if viper.IsSet("s3.port") {
-		s3.Port = viper.GetInt("metadata_s3.port")
+		s3.Port = viper.GetInt("S3MetadataBucket.port")
 	}
 
 	if viper.IsSet("s3.region") {
-		s3.Region = viper.GetString("metadata_s3.region")
+		s3.Region = viper.GetString("S3MetadataBucket.region")
 	}
 
 	if viper.IsSet("s3.chunksize") {
-		s3.Chunksize = viper.GetInt("metadata_s3.chunksize") * 1024 * 1024
+		s3.Chunksize = viper.GetInt("S3MetadataBucket.chunksize") * 1024 * 1024
 	}
 
 	if viper.IsSet("s3.cacert") {
-		s3.Cacert = viper.GetString("metadata_s3.cacert")
+		s3.Cacert = viper.GetString("S3MetadataBucket.cacert")
 	}
 
 	return s3

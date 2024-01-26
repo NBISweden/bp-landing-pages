@@ -13,12 +13,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type metadata_backend struct {
+type MetadataBackend struct {
 	Client *s3.Client
 	Bucket string
 }
 
-func connect_to_s3(mconf metadata_s3_config) *metadata_backend {
+func connect_to_s3(mConf MetadataS3Config) *MetadataBackend {
 	httpClient := awshttp.NewBuildableClient().WithTransportOptions(func(tr *http.Transport) {
 		if tr.TLSClientConfig == nil {
 			tr.TLSClientConfig = &tls.Config{}
@@ -27,12 +27,12 @@ func connect_to_s3(mconf metadata_s3_config) *metadata_backend {
 	})
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion(mconf.Region),
+		config.WithRegion(mConf.Region),
 		config.WithHTTPClient(httpClient),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(mconf.AccessKey, mconf.SecretKey, "")),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(mConf.AccessKey, mConf.SecretKey, "")),
 		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
 			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-				return aws.Endpoint{URL: mconf.URL}, nil
+				return aws.Endpoint{URL: mConf.URL}, nil
 			})),
 	)
 
@@ -40,10 +40,10 @@ func connect_to_s3(mconf metadata_s3_config) *metadata_backend {
 		log.Fatal("Could not connect to metadata S3 bucket: ", err)
 	}
 	client := s3.NewFromConfig(cfg)
-	metadata_client := &metadata_backend{
+	metadata_client := &MetadataBackend{
 
 		Client: client,
-		Bucket: mconf.Bucket,
+		Bucket: mConf.Bucket,
 	}
 
 	return metadata_client
