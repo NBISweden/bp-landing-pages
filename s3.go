@@ -37,7 +37,7 @@ func connect_to_s3(mConf MetadataS3Config) *MetadataBackend {
 	)
 
 	if err != nil {
-		log.Fatal("Could not connect to metadata S3 bucket: ", err)
+		log.Fatalf("Error while setting up s3 config: %v\n ", err)
 	}
 	client := s3.NewFromConfig(cfg)
 	metadata_client := &MetadataBackend{
@@ -45,6 +45,13 @@ func connect_to_s3(mConf MetadataS3Config) *MetadataBackend {
 		Client: client,
 		Bucket: mConf.Bucket,
 	}
-
+	_, err = metadata_client.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+		Bucket: aws.String(metadata_client.Bucket),
+	})
+	if err != nil {
+		log.Fatal("Error while connecting to the metadata bucket ", err)
+	} else {
+		log.Infoln("Connection established to metadata bucket", metadata_client.Bucket)
+	}
 	return metadata_client
 }
