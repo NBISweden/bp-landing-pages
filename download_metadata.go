@@ -33,7 +33,7 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 		}
 		for _, obj := range page.Contents {
 			if err := downloadToFile(manager, LocalDirectory, Bucket, aws.ToString(obj.Key)); err != nil {
-				log.Fatalln("error:", err)
+				log.Fatalf("Error while getting next page from ListObjectsV2Paginator: %v", err)
 			}
 		}
 

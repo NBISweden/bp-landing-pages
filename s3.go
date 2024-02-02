@@ -49,7 +49,7 @@ func connect_to_s3(mConf MetadataS3Config) *MetadataBackend {
 		Bucket: aws.String(metadata_client.Bucket),
 	})
 	if err != nil {
-		log.Fatal("Error while connecting to the metadata bucket ", err)
+		log.Fatalf("Error while connecting to the metadata bucket %v\n ", err)
 	} else {
 		log.Infoln("Connection established to metadata bucket", metadata_client.Bucket)
 	}
