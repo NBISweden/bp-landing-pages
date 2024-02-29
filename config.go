@@ -7,11 +7,16 @@ import (
 	"github.com/spf13/viper"
 )
 
-func getConfig() MetadataS3Config {
+func getMetadataConfig() MetadataS3Config {
 	parseConfig()
 	S3Conf := configS3Storage()
 	return S3Conf
+}
 
+func getDeploymentConfig() DeployS3Config {
+	parseConfig()
+	dS3Conf := deployS3Storage()
+	return dS3Conf
 }
 
 type MetadataS3Config struct {
@@ -24,6 +29,17 @@ type MetadataS3Config struct {
 	Chunksize         int
 	Cacert            string
 	WebMetadataFolder string
+}
+
+type DeployS3Config struct {
+	URL       string
+	Port      int
+	AccessKey string
+	SecretKey string
+	Bucket    string
+	Region    string
+	Chunksize int
+	Cacert    string
 }
 
 func configS3Storage() MetadataS3Config {
@@ -48,6 +64,32 @@ func configS3Storage() MetadataS3Config {
 
 	if viper.IsSet("s3.cacert") {
 		s3.Cacert = viper.GetString("S3MetadataBucket.cacert")
+	}
+
+	return s3
+}
+
+func deployS3Storage() DeployS3Config {
+	s3 := DeployS3Config{}
+	s3.URL = viper.GetString("S3DeploymentBucket.url")
+	s3.AccessKey = viper.GetString("S3DeploymentBucket.accesskey")
+	s3.SecretKey = viper.GetString("S3DeploymentBucket.secretkey")
+	s3.Bucket = viper.GetString("S3DeploymentBucket.bucket")
+	s3.Port = 9000
+	if viper.IsSet("s3.port") {
+		s3.Port = viper.GetInt("S3DeploymentBucket.port")
+	}
+
+	if viper.IsSet("s3.region") {
+		s3.Region = viper.GetString("S3DeploymentBucket.region")
+	}
+
+	if viper.IsSet("s3.chunksize") {
+		s3.Chunksize = viper.GetInt("S3DeploymentBucket.chunksize") * 1024 * 1024
+	}
+
+	if viper.IsSet("s3.cacert") {
+		s3.Cacert = viper.GetString("S3DeploymentBucket.cacert")
 	}
 
 	return s3

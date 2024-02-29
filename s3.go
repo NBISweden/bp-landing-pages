@@ -17,8 +17,12 @@ type MetadataBackend struct {
 	Client *s3.Client
 	Bucket string
 }
+type DeploymentBackend struct {
+	Client *s3.Client
+	Bucket string
+}
 
-func connect_to_s3(mConf MetadataS3Config) *MetadataBackend {
+func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 	httpClient := awshttp.NewBuildableClient().WithTransportOptions(func(tr *http.Transport) {
 		if tr.TLSClientConfig == nil {
 			tr.TLSClientConfig = &tls.Config{}
@@ -54,4 +58,42 @@ func connect_to_s3(mConf MetadataS3Config) *MetadataBackend {
 		log.Infoln("Connection established to metadata bucket", metadata_client.Bucket)
 	}
 	return metadata_client
+}
+
+func connectDeployments3(dConf DeployS3Config) *DeploymentBackend {
+	httpClient := awshttp.NewBuildableClient().WithTransportOptions(func(tr *http.Transport) {
+		if tr.TLSClientConfig == nil {
+			tr.TLSClientConfig = &tls.Config{}
+		}
+		tr.TLSClientConfig.MinVersion = tls.VersionTLS13
+	})
+
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(dConf.Region),
+		config.WithHTTPClient(httpClient),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(dConf.AccessKey, dConf.SecretKey, "")),
+		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
+			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+				return aws.Endpoint{URL: dConf.URL}, nil
+			})),
+	)
+
+	if err != nil {
+		log.Fatalf("Error while setting up s3 config: %v\n ", err)
+	}
+	client := s3.NewFromConfig(cfg)
+	deployment_client := &DeploymentBackend{
+
+		Client: client,
+		Bucket: dConf.Bucket,
+	}
+	_, err = deployment_client.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+		Bucket: aws.String(deployment_client.Bucket),
+	})
+	if err != nil {
+		log.Fatalf("Error while connecting to the deplpyment bucket %v\n ", err)
+	} else {
+		log.Infoln("Connection established to deployment bucket", deployment_client.Bucket)
+	}
+	return deployment_client
 }
