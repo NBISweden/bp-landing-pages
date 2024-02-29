@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+{{ partial "head.html" . }}
+{{ partial "nav.html" . }}
+<!-- Page Header -->
+{{ block "header" .}}
+
+<header class="page-header" style="background-image: url('{{ .Site.Params.header_image | relURL }}')",role="banner" >
+                <h1 class="project-name" >{{ .Site.Title}} </h1>
+                <h2 class="project-tagline">{{ .Site.Params.slogan }}</h2>
+</header>
+{{ end }}
+
+<main id="content" class="main-content" role="main">
+{{ block "main" . }}
+
+{{ end }}
+
+</main>
+</body>
+</html>

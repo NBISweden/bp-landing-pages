@@ -1,0 +1,187 @@
+{{ define "main" }}
+<div class = "info-box">
+       <p>{{.Params.datacite.name}}</p>
+       <h2>Sample images</h2>
+       <p>Sample images with reduced image quality. Please click to preview.</p>
+ 
+       <div>
+        <ul class="dataset-example-images" id="dataset-example-images" >
+       <li><img src="{{.Site.BaseURL}}{{ .Params.other.image}}"></li>
+        </ul>
+       </div>
+     <h2 class="dataset-information">Dataset information</h2>
+     <table>
+        <tr>
+            <th>Title</th>
+            <td>{{ .Params.datacite.name }}</td>
+          </tr>
+          <tr>
+            <th>Short name</th>
+            <td>{{ .Params.other.shortName }}</td>
+          </tr>
+        <tr>
+          <th>Age at extraction</th>
+          <td>
+            {{range .Params.other.age_at_extraction}}
+            <p>{{.}}</p>
+            {{end}}
+          </td>
+        </tr>
+        <tr>
+            <th>Anatomical site</th>
+            <td>
+              {{range .Params.other.anatomical_site }}
+            <p>{{.}}</p>
+              {{ end }}
+            </td>
+        </tr>
+        <tr>
+            <th>Animal species</th>
+            <td>{{.Params.other.animal_species}} </td>
+          </tr>
+          <tr>
+            <th>Block preparation</th>
+            <td>{{ .Params.other.block_preparation }}</td>
+            
+          </tr>
+          <tr>
+            <th>BP image type</th>
+            <td>
+              {{.Params.other.bp_image_type}}
+            </td>
+          </tr>
+          <tr>
+            <th>Extraction method</th>
+            <td>
+              {{ range  .Params.other.extraction_method }}
+            <p>{{.}}</p>
+              {{ end }}
+            </td>
+          </tr>
+          <tr>
+            <th>Image resolution</th>
+            <td>
+              {{ range .Params.other.image_resolution }}
+              <p>{{.}}</p>
+              {{ end }} 
+            </td>
+          </tr>
+          <tr>
+            <th>Indirect access only</th>
+            <td>{{.Params.other.indirect_access_only}}</td>
+          </tr>
+          <tr>
+            <th>Staining name</th>
+            <td>
+              {{ range .Params.other.staining_name }}
+            <p>{{.}}</p>
+              {{ end }}
+
+
+            </td>
+          </tr>
+          <tr>
+            <th>Scanner</th>
+            <td>
+              {{ range .Params.other.scanner }}
+              <p>{{.}}</p>
+              {{end}}
+
+            </td>
+          </tr>
+          <tr>
+          <tr>
+            <th>Cite as</th>
+            <td>
+              {{ .Params.datacite.author }}
+              {{ .Params.datacite.name}}
+            </td>
+          </tr>
+          <tr>
+            <th>Field</th>
+            <td>{{ .Params.datacite.about }}</td>
+            <tr>
+          </tr>
+          <tr>
+            <th>Organ</th>
+            <td>
+              {{ range .Params.other.organ }}
+                <a>{{ . }}</a><br/>
+              {{ end }}
+            </td>
+          </tr>
+          <tr>
+            <th>Year</th>
+            <td></td>
+          </tr>
+          <tr>
+            <th>DOI</th>
+            <td><a>.Params.datacite</a></td>
+          </tr>
+          <tr>
+            <th>Status</th>
+            <td>{{ .Params.other.status }}</td>
+          </tr>
+          <tr>
+            <th>Version</th>
+            <td>{{ .Params.datacite.version }}</td>
+          </tr>
+          <tr>
+            <th>Scans</th>
+            <td>{{ .Params.other.numberOfScans }}</td>
+          </tr>
+          <tr>
+            <th>Annotations</th>
+            <td>{{ .Params.other.numberOfAnnotations }}</td>
+          </tr>
+          <tr>
+            <th>Size</th>
+            <td>{{.Params.other.bytes}}</td>
+          </tr>
+          
+          <tr>
+            <th>Modality</th>
+            <td>
+              {{ .Params.other.modality }}
+            </td>
+          </tr>
+          <tr>
+            <th>Copyright</th>
+            <td>
+            
+            </td>
+          </tr>
+          <tr>
+            <th>Sample attribute</th>
+            <td>
+              {{.Params.SAMPLE.SAMPLE_ATTRIBUTES}}
+            </td>
+          </tr>
+          <tr>
+            <th>Sample name</th>
+            <td>
+              {{.Params.SAMPLE.SAMPLE_NAME}}
+            </td>
+          </tr>
+          <tr>
+            <th>Alias</th>
+            <td>
+              {{.Params.SAMPLE.alias}}
+            </td>
+          </tr>
+          <tr>
+            <th>Center name</th>
+            <td>
+              {{.Params.SAMPLE.center_name}}
+            </td>
+          </tr>
+        </table> 
+      </div>    
+        {{.Content}}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.js"></script>
+        <script>
+          const gallery = new Viewer(document.getElementById('dataset-example-images'), { url: "data-original" });
+        </script>
+
+    {{ end }}

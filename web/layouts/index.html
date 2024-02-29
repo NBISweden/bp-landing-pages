@@ -1,0 +1,28 @@
+{{ define "main" }}
+  <div data-pagefind-ignore="all" class="container">
+    <main id="content" class="main-content" role="main" >
+        <h2>NOTICE (Please read the following notice carefully)</h2>
+        This is a prototype website for Dataset description pages / DOI landing pages for Bigpicture.
+        <br/>
+        This website is openly accessible to Everyone on the Internet, because the purpose of Dataset description pages / DOI landing pages is to be accessible to anyone on the Internet.
+        <br/>
+        The reason for Dataset description pages / DOI landing pages to be openly accessible to anyone on the Internet, is so that a potential user can learn<br/> 
+        1) that a dataset exists,<br/> 
+        2) how it can be used, <br/>
+        3) why they should bother applying for access, and  how to apply for access.
+        <br/>
+        This website was set up on instruction from wp3 (data contributor) leadership, with a starting point in the AIDA Data Hub Dataset register format, in order to iterate toward a suitable format for Dataset description pages / DOI landing pages in Bigpicture, in dialogue with the reference group consisting of data contributor representatives, which is authorized by the managing board<br/> 
+        to make decisions for this prototype. This will happen in two-week feedback iterations. When the reference group is happy with the format, it will be submitted to the managing board for approval for
+    
+        integration nto the Bigpicture metadata standard.
+    
+            {{ with .Site.Params.sidebar_avatar }}
+            <a href="{{ "/about" | relLangURL }}">
+               <img class="home-image",  src="{{ . | relURL }}" alt="avatar" style="cursor: pointer" />
+            </a>
+            {{ end }}
+
+    </main>
+    
+</div>
+{{ end }}
