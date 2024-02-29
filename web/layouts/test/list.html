@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+{{ partial "head.html" . }}
+{{ partial "nav.html" . }}
+<!-- Page Header -->
+{{ block "header" .}}
+<header class="intro-header" style="background-image: url('{{ .Site.Params.header_image | relURL }}')",role="banner" >
+                <h1 class="heading-for-site" >{{ .Site.Title}} </h1>
+                <h2 class="subheading">{{ .Site.Params.slogan }}</h2>
+</header>
+{{ end }}
+aaa
+
+</body>
+</html>

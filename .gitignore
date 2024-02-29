@@ -1,1 +1,6 @@
-web/*
+web/public/
+dev_utils/config.yaml
+web/static/img/m_p_b/
+web/static/img/m_p_c/
+web/static/img/m_p_p/
+web/static/img/m_r_f/
