@@ -23,4 +23,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: bp-landing-pages:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/bp-landing-pages:latest
