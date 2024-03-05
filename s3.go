@@ -31,7 +31,7 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 	})
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion(mConf.Region),
+		config.WithRegion("auto"),
 		config.WithHTTPClient(httpClient),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(mConf.AccessKey, mConf.SecretKey, "")),
 		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
@@ -69,7 +69,7 @@ func connectDeployments3(dConf DeployS3Config) *DeploymentBackend {
 	})
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion(dConf.Region),
+		config.WithRegion("auto"),
 		config.WithHTTPClient(httpClient),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(dConf.AccessKey, dConf.SecretKey, "")),
 		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
