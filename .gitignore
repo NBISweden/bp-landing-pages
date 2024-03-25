@@ -1,6 +1,6 @@
 web/public/*
-web/content/datasets/*
-web/data/*
+web/content/datasets/test*
+web/data/*.xml
 dev_utils/config.yaml
 charts/*
 nginx_proxy/*

@@ -41,11 +41,9 @@ func markDownCreator() {
 		markdownContent := fmt.Sprintf(`
 ---
 ---
-{{ define "main" }}
 
 {{< datafetch variable="%s" >}}
 
-{{ end }}
 
 Filename of the associated XML file: %s
 `, fileNameWithoutExt, xmlFileName)
