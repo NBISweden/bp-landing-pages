@@ -1,4 +1,4 @@
-baseurl = "https://nbisweden.github.io/hugo.bp.datasets.nbis.se"
+baseurl = "https://foo.bar.com/home"
 title = "Bigpicture datasets"
 languageCode = "en-us"
 

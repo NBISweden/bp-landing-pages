@@ -1,7 +1,7 @@
 
 {{- $variable := .Get "variable" -}}
 <div>
-    {{ $data := index .Site.Data $variable }}
+    {{ $data := index .Site.Data.datasets $variable }}
     {{ if $data }}
         {{ range $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
         <p>{{ .TAG }} : {{ .VALUE }} </p>

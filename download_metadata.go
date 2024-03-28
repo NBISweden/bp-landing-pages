@@ -16,7 +16,7 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 	var (
 		Bucket         = Metadataclient.Bucket // Download from this bucket
 		Prefix         = "datasets/"           // Using this key prefix
-		LocalDirectory = "web/content/"        // Into this directory
+		LocalDirectory = "web/data/"           // Into this directory
 	)
 	client := Metadataclient.Client
 

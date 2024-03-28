@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -16,7 +17,6 @@ func test(DeploymenClient *DeploymentBackend) {
 	var (
 		localPath = "web/public/"
 		bucket    = DeploymenClient.Bucket
-		prefix    = "datasets/"
 	)
 
 	walker := make(fileWalk)
@@ -39,14 +39,24 @@ func test(DeploymenClient *DeploymentBackend) {
 			log.Println("Failed opening file", path, err)
 			continue
 		}
-		defer file.Close()
+		buf := make([]byte, 512)
+		_, err = file.Read(buf)
+		contentType := http.DetectContentType(buf)
+
+		if err != nil {
+			log.Fatalln("File bytes empty", path, err)
+		}
+
 		client := DeploymenClient.Client
 		uploader := manager.NewUploader(client)
 		result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
-			Bucket: &bucket,
-			Key:    aws.String(filepath.Join(prefix, rel)),
-			Body:   file,
+			Bucket:      &bucket,
+			Key:         aws.String(rel),
+			Body:        file,
+			ContentType: aws.String(contentType),
 		})
+		println(contentType)
+		file.Close()
 		if err != nil {
 			log.Fatalln("Failed to upload", path, err)
 		}

@@ -9,7 +9,7 @@ import (
 
 func markDownCreator() {
 	// XML directory path (change this to your XML directory path)
-	xmlDirPath := "web/data/"
+	xmlDirPath := "web/data/datasets/"
 
 	// Directory to save Markdown files
 	markdownDir := "web/content/datasets/"
