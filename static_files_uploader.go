@@ -42,6 +42,10 @@ func test(DeploymenClient *DeploymentBackend) {
 		buf := make([]byte, 512)
 		_, err = file.Read(buf)
 		contentType := http.DetectContentType(buf)
+		ext := filepath.Ext(path)
+		if ext == ".css" {
+			contentType = "text/css;"
+		}
 
 		if err != nil {
 			log.Fatalln("File bytes empty", path, err)
