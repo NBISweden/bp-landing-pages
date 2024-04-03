@@ -3,3 +3,6 @@ namespace:
 s3Host: 
 bucketUrl: 
 
+tls: false
+domainName: 
+secretName: 
