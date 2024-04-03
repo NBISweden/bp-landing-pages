@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: landing-pages-service
+  namespace: {{ .Values.namespace }}
+spec:
+  externalName: {{ .Values.s3Host }}
+  sessionAffinity: None
+  type: ExternalName
