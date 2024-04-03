@@ -12,11 +12,14 @@ func main() {
 	Metadataclient := connectMetadatas3(mConf)
 	log.Infof("Connection to the bucket established")
 	metadataDownloader(Metadataclient)
+	markDownCreator()
 	cmd := exec.Command("hugo")
 	cmd.Dir = "./web/"
 	cmd.Run()
 	log.Infof("Hugo successfully built")
-	deConf := getDeploymentConfig()
-	connectDeployments3(deConf)
+	dConf := getDeploymentConfig()
+	DeploymenClient := connectDeployments3(dConf)
+	log.Infof("Connection to the bucket established")
+	test(DeploymenClient)
 
 }

@@ -1,20 +1,15 @@
-baseurl = "https://nbisweden.github.io/hugo.bp.datasets.nbis.se"
+baseurl = "https://foo.bar.com"
 title = "Bigpicture datasets"
 languageCode = "en-us"
-preserveTaxonomyNames = true
-paginate = 5 #frontpage pagination
 
-
+uglyURLs = true
 [params]
   header_image = "img/bigpicture-banner.jpg"
   SEOTitle = "Bigpicture datasets"
-    slogan = "Demo site for Bigpicture landing pages using HUGO"
+  slogan = "Demo site for Bigpicture landing pages using HUGO"
 
   image_404 = "img/404-bg.jpg"
 
   # Sidebar settings
   sidebar_about_description = "Bigpicture dataset description pages"
   sidebar_avatar = "img/bigpicture_logo.svg"      # use absolute URL, seeing it's used in both `/` and `/about/`
-
-
-[[params.addtional_menus]]

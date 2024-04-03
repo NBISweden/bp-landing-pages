@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	awshttp "github.com/aws/aws-sdk-go-v2/aws/transport/http"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -23,16 +22,11 @@ type DeploymentBackend struct {
 }
 
 func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
-	httpClient := awshttp.NewBuildableClient().WithTransportOptions(func(tr *http.Transport) {
-		if tr.TLSClientConfig == nil {
-			tr.TLSClientConfig = &tls.Config{}
-		}
-		tr.TLSClientConfig.MinVersion = tls.VersionTLS13
-	})
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion("auto"),
-		config.WithHTTPClient(httpClient),
+		config.WithHTTPClient(&http.Client{Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}}),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(mConf.AccessKey, mConf.SecretKey, "")),
 		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
 			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
@@ -61,16 +55,11 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 }
 
 func connectDeployments3(dConf DeployS3Config) *DeploymentBackend {
-	httpClient := awshttp.NewBuildableClient().WithTransportOptions(func(tr *http.Transport) {
-		if tr.TLSClientConfig == nil {
-			tr.TLSClientConfig = &tls.Config{}
-		}
-		tr.TLSClientConfig.MinVersion = tls.VersionTLS13
-	})
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion("auto"),
-		config.WithHTTPClient(httpClient),
+		config.WithHTTPClient(&http.Client{Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}}),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(dConf.AccessKey, dConf.SecretKey, "")),
 		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
 			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
