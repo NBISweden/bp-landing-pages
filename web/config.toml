@@ -1,8 +1,8 @@
-baseurl = "https://foo.bar.com/home"
+baseurl = "https://foo.bar.com"
 title = "Bigpicture datasets"
 languageCode = "en-us"
 
-
+uglyURLs = true
 [params]
   header_image = "img/bigpicture-banner.jpg"
   SEOTitle = "Bigpicture datasets"
