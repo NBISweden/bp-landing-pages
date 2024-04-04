@@ -5,4 +5,5 @@ bucketUrl:
 
 tls: false
 domainName: 
-secretName: 
+secretName:
+clusterIssuer: 
