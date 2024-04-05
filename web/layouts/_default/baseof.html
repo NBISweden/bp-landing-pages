@@ -6,12 +6,12 @@
 <!-- Page Header -->
 {{ block "header" .}}
 
-<header class="page-header" style="background-image: url('{{ .Site.Params.header_image | relURL }}')",role="banner" >
+<header class="page-header" ,role="banner" >
                 <h1 class="project-name" >{{ .Site.Title}} </h1>
                 <h2 class="project-tagline">{{ .Site.Params.slogan }}</h2>
 </header>
 {{ end }}
-
+<body>
 <main id="content" class="main-content" role="main">
 {{ block "main" . }}
 

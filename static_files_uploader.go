@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"net/http"
 	"os"
@@ -39,7 +40,10 @@ func test(DeploymenClient *DeploymentBackend) {
 			log.Println("Failed opening file", path, err)
 			continue
 		}
-		buf := make([]byte, 512)
+		fileInfo, _ := file.Stat()
+		var fileSize int64 = fileInfo.Size()
+
+		buf := make([]byte, fileSize)
 		_, err = file.Read(buf)
 		contentType := http.DetectContentType(buf)
 		ext := filepath.Ext(path)
@@ -56,7 +60,7 @@ func test(DeploymenClient *DeploymentBackend) {
 		result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
 			Bucket:      &bucket,
 			Key:         aws.String(rel),
-			Body:        file,
+			Body:        bytes.NewReader(buf),
 			ContentType: aws.String(contentType),
 		})
 		println(contentType)

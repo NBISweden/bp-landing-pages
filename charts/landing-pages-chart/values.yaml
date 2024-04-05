@@ -1,4 +1,6 @@
 
+images:
+  lp_image: 
 namespace:
 s3Host: 
 bucketUrl: 
@@ -7,3 +9,19 @@ tls: false
 domainName: 
 secretName:
 clusterIssuer: 
+
+s3MetadataBucket:
+  url: 
+  accesskey: 
+  secretkey: 
+  bucket: 
+  region: 
+
+s3DeploymentBucket:
+  url: 
+  accesskey: 
+  secretkey:  
+  bucket: 
+  region: 
+
+schedule: "0 0 1 * *"

@@ -6,7 +6,7 @@ uglyURLs = true
 [params]
   header_image = "img/bigpicture-banner.jpg"
   SEOTitle = "Bigpicture datasets"
-  slogan = "Demo site for Bigpicture landing pages using HUGO"
+  slogan = "Production site for Bigpicture landing pages"
 
   image_404 = "img/404-bg.jpg"
 
