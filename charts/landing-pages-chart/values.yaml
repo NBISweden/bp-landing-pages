@@ -10,17 +10,18 @@ domainName:
 secretName:
 clusterIssuer: 
 
-S3MetadataBucket:
-  url: "asdfe"
-  accesskey: sdef
-  secretkey: sage
-  bucket: sage
-  region: asegt
+s3MetadataBucket:
+  url: 
+  accesskey: 
+  secretkey: 
+  bucket: 
+  region: 
 
-S3DeploymentBucket:
-  url: asegt
-  accesskey: aasegf
-  secretkey: asef 
-  bucket: asegt
-  region: asegtf
- 
+s3DeploymentBucket:
+  url: 
+  accesskey: 
+  secretkey:  
+  bucket: 
+  region: 
+
+schedule: "0 0 1 * *"
