@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+    name: lp-generator-cronjob
+    namespace: {{ .Values.namespace }}
+spec:
+    schedule: {{ .Values.backupconfig.schedule }}
+    concurrencyPolicy: Forbid
+    startingDeadlineSeconds: 3600
+    jobTemplate:
+        spec:
+            backoffLimit: 2
+            ttlSecondsAfterFinished: 120
+            template:
+                spec:
+                    securityContext:
+                      runAsUser: 1000 
+                      runAsGroup: 1000
+                      fsGroup: 1000
+                    volumes:
+                    - name: "tmp"
+                      emptyDir: 
+                        sizeLimit: "1Gi"
+                    - name: "cronjob"
+                      projected:
+                        defaultMode: 0400
+                        sources:
+                        - secret:
+                            name: "lp-generator-secret"
+                    containers:
+                    - name: gc-backup-container
+                      image: {{ .Values.images.lp_image }}
+                      imagePullPolicy: Always
+                      env:
+                      - name: CONFIGFILE  
+                        value: "/.secrets/config.yaml"
+                      volumeMounts:
+                      - name: "tmp"
+                        mountPath: "/tmp"
+                      - name: "cronjob"
+                        mountPath: "/.secrets/config.yaml"
+                        subPath: "config.yaml"
+                      - name: "cronjob"
+                        mountPath: "/.secrets/keys/key.pub.pem"
+                        subPath: "key.pub.pem"
+                      - name: "cronjob"
+                        mountPath: "/.secrets/keys/key.sec.pem"
+                        subPath: "key.sec.pem"
+                      resources:
+                        requests: 
+                            cpu: "100m"
+                            memory: "128M"
+                        limits: 
+                            cpu: "100m"
+                            memory: "128M"
+                      securityContext:
+                        seccompProfile:
+                          type: RuntimeDefault
+                        capabilities:
+                          drop: ["ALL"]
+                        allowPrivilegeEscalation: false
+                        readOnlyRootFilesystem: true  
+                    restartPolicy: OnFailure

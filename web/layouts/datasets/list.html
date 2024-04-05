@@ -1,19 +1,11 @@
 {{ define "main" }}
-
-
 <ul>
-    <!-- Ranges through content/posts/*.md -->
-    {{ range .Pages }}
-      <li>
-        <a href="{{ .RelPermalink }}"> {{ .Page }}</a>
-
-
-      </li>
-    {{ end }}
+  {{ range .Pages }}
+    <li>
+      <a href="{{ .RelPermalink }}"> {{ .Page }}</a>
+    </li>
+  {{ end }}
   </ul>
-
 {{ .Params.datasets.name }}
-
 {{ .Content }}
-
 {{ end }}

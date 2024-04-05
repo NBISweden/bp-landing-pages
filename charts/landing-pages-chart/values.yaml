@@ -1,4 +1,6 @@
 
+images:
+  lp_image: 
 namespace:
 s3Host: 
 bucketUrl: 
@@ -7,3 +9,18 @@ tls: false
 domainName: 
 secretName:
 clusterIssuer: 
+
+S3MetadataBucket:
+  url: "asdfe"
+  accesskey: sdef
+  secretkey: sage
+  bucket: sage
+  region: asegt
+
+S3DeploymentBucket:
+  url: asegt
+  accesskey: aasegf
+  secretkey: asef 
+  bucket: asegt
+  region: asegtf
+ 

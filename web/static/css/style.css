@@ -16,9 +16,7 @@ body {
 
 .page-header{
     background-color: #146eb8;
-    background-image: url(/assets/images/bigpicture-banner.jpg);
     color: #1C007B;
-    background-size: 50%;
      background-position-y: center;
   }
   .page-header a {
