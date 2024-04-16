@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
     name: lp-generator-cronjob
+    namespace: {{ .Values.namespace }}
 spec:
     schedule: {{ .Values.schedule }}
     concurrencyPolicy: Forbid
