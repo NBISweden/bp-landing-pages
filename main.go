@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	log.SetLevel(log.InfoLevel)
 	log.Infoln("started app successfully")
 	mConf := getMetadataConfig()
 	Metadataclient := connectMetadatas3(mConf)
