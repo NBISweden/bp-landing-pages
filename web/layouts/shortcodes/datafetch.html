@@ -1,11 +1,51 @@
-
 {{- $variable := .Get "variable" -}}
 <div>
     {{ $data := index .Site.Data.datasets $variable }}
     {{ if $data }}
-        {{ range $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
-        <p>{{ .TAG }} : {{ .VALUE }} </p>
+        <table>
+        <!-- String attributes section -->
+        {{ $stringAttributes := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
+        {{ $filtered := where $stringAttributes "TAG" "!=" "header" }}
+        {{ range $filtered }}
+            <tr>
+            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
+           <td>{{ .VALUE }}</td>
+        </tr>
+        
+            {{ end }}
+            <!-- Set attributes section -->
+            {{ $setAttributes := index $data.LANDING_PAGE.ATTRIBUTES.SET_ATTRIBUTE }}
+        {{ range $setAttributes }}
+        <!-- Keywords section -->
+         {{ $keywords := slice }}
+            {{ if eq .TAG "anatomical_sites"}}
+            <tr>
+            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
+           {{ range .VALUE.STRING_ATTRIBUTE }}
+           {{ $keywords = $keywords | append .VALUE }}
+           {{ end }}
+           <td>{{ delimit $keywords ", " }}</td>
+        </tr>
+        {{ else }}
+        <tr> 
+            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
+            {{ range .VALUE.STRING_ATTRIBUTE }}
+            <td>{{  . }}
+           {{ end }}
+        </tr>
         {{ end }}
+
+       
+        {{ end }}
+        <!-- Numeric attributes section -->
+        {{ $numAttributes := index $data.LANDING_PAGE.ATTRIBUTES.NUMERIC_ATTRIBUTE }}
+        {{ range $numAttributes }}
+            <tr>
+            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
+           <td>{{ .VALUE }}</td>
+        </tr>
+       {{ end }}
+    </table>
     {{ else }}
         <p>Data for '{{ $variable }}' not found.</p>
     {{ end }}
