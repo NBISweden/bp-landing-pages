@@ -1,9 +1,9 @@
 {{ define "main" }}
+<h2> Bigpicture Datasets</h2>
 <ul>
   {{ range .Pages }}
-    <li>
-      <a href="{{ .RelPermalink }}"> {{ .Page }}</a>
-    </li>
+      <a href="{{ .RelPermalink }}"><p>HUS mock dataset</p></a>
+  
   {{ end }}
   </ul>
 {{ .Params.datasets.name }}
