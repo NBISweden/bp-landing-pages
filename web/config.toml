@@ -1,4 +1,4 @@
-baseurl = "https://lp.bp.nbis.se"
+baseurl = "https://datasets.bp.nbis.se"
 title = "Bigpicture datasets"
 languageCode = "en-us"
 
