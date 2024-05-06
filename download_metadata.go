@@ -29,7 +29,7 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 	for paginator.HasMorePages() {
 		page, err := paginator.NextPage(context.TODO())
 		if err != nil {
-			log.Fatalln("error:", err)
+			log.Fatalln("Error while paginating the s3 bucket", err)
 		}
 		for _, obj := range page.Contents {
 			err := downloadToFile(manager, LocalDirectory, Bucket, aws.ToString(obj.Key))
@@ -58,12 +58,10 @@ func downloadToFile(downloader *manager.Downloader, targetDirectory, bucket, key
 		log.Fatal("Error while writing XML files to folder", err)
 	}
 	defer fd.Close()
-	// Download the file using the AWS SDK for Go
-	//fmt.Printf("Downloading s3://%s/%s to %s...\n", bucket, key, file)
 
 	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
 	if err != nil {
-		log.Infoln("Failed to download metadatafiles")
+		log.Fatal("Failed to download metadatafiles", err)
 	}
 	return err
 }

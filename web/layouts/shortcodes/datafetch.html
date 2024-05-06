@@ -1,12 +1,54 @@
-
 {{- $variable := .Get "variable" -}}
 <div>
     {{ $data := index .Site.Data.datasets $variable }}
     {{ if $data }}
-        {{ range $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
-        <p>{{ .TAG }} : {{ .VALUE }} </p>
+    {{ $stringAttributes2 := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
+        {{ $rte := where $stringAttributes2 "TAG"  "header" }}
+        {{ range $rte }}
+        <h1>{{ .VALUE  }} </h1>
         {{ end }}
+        <table>
+        <!-- String attributes section -->
+        {{ $stringAttributes := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
+        {{ $filtered := where $stringAttributes "TAG" "!=" "header" }}
+        {{ $filtered := where $filtered "TAG" "!=" "rems_link" }}
+        {{ range $filtered }}
+            <tr>
+            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
+           <td>{{ .VALUE }}</td>
+        </tr>
+        
+            {{ end }}
+            <!-- Set attributes section -->
+      
+            {{ range index $data.LANDING_PAGE.ATTRIBUTES.SET_ATTRIBUTE }}
+            <tr>
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
+               <td>{{ .VALUE.STRING_ATTRIBUTE.VALUE }}</td>
+            </tr>
+           {{ end }}
+            
+
+       
+        <!-- Numeric attributes section -->
+        {{ $numAttributes := index $data.LANDING_PAGE.ATTRIBUTES.NUMERIC_ATTRIBUTE }}
+        {{ range $numAttributes }}
+            <tr>
+            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
+           <td>{{ .VALUE }}</td>
+        </tr>
+       {{ end }}
+    </table>
     {{ else }}
         <p>Data for '{{ $variable }}' not found.</p>
+    {{ end }}
+    
+    <h2>Comments</h2>
+    {{ $stringAttributes2 := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
+    {{ $rte := where $stringAttributes2 "TAG"  "rems_link" }}
+    {{ range $rte }}
+    <a href= "{{ .VALUE }}"> <h2 >Apply for access</h2></a>
+    <p>If you are interested to access data, apply through clicking link above</p>
+
     {{ end }}
 </div>

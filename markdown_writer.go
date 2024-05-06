@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func markDownCreator() {
@@ -16,14 +18,14 @@ func markDownCreator() {
 
 	// Create the Markdown directory if it doesn't exist
 	if err := os.MkdirAll(markdownDir, 0755); err != nil {
-		fmt.Println("Error creating directory:", err)
+		log.Fatal("Error creating directory:", err)
 		os.Exit(1)
 	}
 
 	// Walk through the XML directory
 	err := filepath.Walk(xmlDirPath, func(xmlFilePath string, info os.FileInfo, err error) error {
 		if err != nil {
-			fmt.Printf("Error accessing file %s: %v\n", xmlFilePath, err)
+			log.Fatal("Error accessing file", err)
 			return nil
 		}
 		// Skip directories
@@ -52,7 +54,7 @@ Filename of the associated XML file: %s
 		mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")
 		mdFile, err := os.Create(mdFileName)
 		if err != nil {
-			fmt.Printf("Error creating Markdown file %s: %v\n", mdFileName, err)
+			log.Fatal("Error creating Markdown file %V", err)
 			return nil
 		}
 		defer mdFile.Close()
@@ -60,17 +62,16 @@ Filename of the associated XML file: %s
 		// Write Markdown content to the file
 		_, err = mdFile.WriteString(markdownContent)
 		if err != nil {
-			fmt.Printf("Error writing to Markdown file %s: %v\n", mdFileName, err)
+			log.Fatal("Error writing to Markdown file %V", mdFileName, err)
 			return nil
 		}
 
-		fmt.Printf("Markdown file %s created successfully!\n", mdFileName)
+		log.Infoln("Markdown file %S created successfully!\n", mdFileName)
 
 		return nil
 	})
 
 	if err != nil {
-		fmt.Println("Error walking through directory:", err)
-		os.Exit(1)
+		log.Fatal("Error walking through directory:", err)
 	}
 }

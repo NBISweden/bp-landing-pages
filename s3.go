@@ -43,13 +43,24 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 		Client: client,
 		Bucket: mConf.Bucket,
 	}
-	_, err = metadata_client.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+	resp, err := metadata_client.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
 		Bucket: aws.String(metadata_client.Bucket),
 	})
 	if err != nil {
 		log.Fatalf("Error while connecting to the metadata bucket %v\n ", err)
 	} else {
 		log.Infoln("Connection established to metadata bucket", metadata_client.Bucket)
+	}
+
+	// Abort if 0 metadata files found in bucket
+	numberOfFiles := 0
+	for _, obj := range resp.Contents {
+		if obj.Key != nil {
+			numberOfFiles++
+		}
+	}
+	if numberOfFiles == 0 {
+		log.Fatal("No Metadata files found in bucket. Length of files ", numberOfFiles)
 	}
 	return metadata_client
 }

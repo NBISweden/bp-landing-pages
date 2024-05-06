@@ -63,7 +63,7 @@ func test(DeploymenClient *DeploymentBackend) {
 			Body:        bytes.NewReader(buf),
 			ContentType: aws.String(contentType),
 		})
-		println(contentType)
+		log.Debug(contentType)
 		file.Close()
 		if err != nil {
 			log.Fatalln("Failed to upload", path, err)
