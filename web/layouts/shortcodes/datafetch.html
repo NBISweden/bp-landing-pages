@@ -1,14 +1,28 @@
 {{- $variable := .Get "variable" -}}
-<div>
+<div data-pagefind-body >
     {{ $data := index .Site.Data.datasets $variable }}
     {{ if $data }}
-    {{ $stringAttributes2 := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
-        {{ $rte := where $stringAttributes2 "TAG"  "header" }}
-        {{ range $rte }}
-        <h1>{{ .VALUE  }} </h1>
-        {{ end }}
-        <table>
-        <!-- String attributes section -->
+    <!--Indexing subset of attributes-->
+    {{ $stringAttributes := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
+    {{ $setAttributes := index $data.LANDING_PAGE.ATTRIBUTES.SET_ATTRIBUTE }}
+    {{ $numAttributes := index $data.LANDING_PAGE.ATTRIBUTES.NUMERIC_ATTRIBUTE }}
+  <!--Header-->
+    {{ range $rte := where $stringAttributes "TAG"  "header" }}
+    <h2>{{ index $rte "VALUE" }}</h2>
+        {{end }}
+    <!--Keywords-->
+    {{ $rtes := where $setAttributes "TAG" "keywords"}}
+    {{range $ty := index $rtes}}
+    {{range $er := index .VALUE.STRING_ATTRIBUTE }}
+    {{.VALUE}},
+    {{end}}
+    {{end}}
+    <table>
+            <tr>
+         {{ range $rte := where $stringAttributes "TAG"  "header" }}
+         <td>{{ index $rte "VALUE" }}</td>
+             {{end }}
+         </tr>
         {{ $stringAttributes := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
         {{ $filtered := where $stringAttributes "TAG" "!=" "header" }}
         {{ $filtered := where $filtered "TAG" "!=" "rems_link" }}
@@ -19,36 +33,11 @@
         </tr>
         
             {{ end }}
-            <!-- Set attributes section -->
-      
-            {{ range index $data.LANDING_PAGE.ATTRIBUTES.SET_ATTRIBUTE }}
-            <tr>
-                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
-               <td>{{ .VALUE.STRING_ATTRIBUTE.VALUE }}</td>
-            </tr>
-           {{ end }}
-            
-
-       
-        <!-- Numeric attributes section -->
-        {{ $numAttributes := index $data.LANDING_PAGE.ATTRIBUTES.NUMERIC_ATTRIBUTE }}
-        {{ range $numAttributes }}
-            <tr>
-            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
-           <td>{{ .VALUE }}</td>
-        </tr>
-       {{ end }}
+        
     </table>
     {{ else }}
         <p>Data for '{{ $variable }}' not found.</p>
     {{ end }}
     
     <h2>Comments</h2>
-    {{ $stringAttributes2 := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
-    {{ $rte := where $stringAttributes2 "TAG"  "rems_link" }}
-    {{ range $rte }}
-    <a href= "{{ .VALUE }}"> <h2 >Apply for access</h2></a>
-    <p>If you are interested to access data, apply through clicking link above</p>
-
-    {{ end }}
 </div>
