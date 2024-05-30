@@ -176,4 +176,48 @@
     {{ end }}
     
     <h2>Comments</h2>
+
+    <h2>Terms of use</h2>
+    {{ $stringAttributes := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
+    {{ $setAttributes := index $data.LANDING_PAGE.ATTRIBUTES.SET_ATTRIBUTE }}
+    <table>
+        <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "type_of_access" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
+        </tr>
+        <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "permitted_use_or_purpose" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
+        </tr>
+        <tr>
+            {{ range $rte := where $setAttributes "TAG"  "use_restrictions" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>
+                {{ range index $rte.VALUE.STRING_ATTRIBUTE }}
+                {{.VALUE}}
+                {{end}}
+                </td>
+            {{end }}
+        </tr>
+        <tr>
+            {{ range $rte := where $setAttributes "TAG"  "allowed_geographical_distribution" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>
+                {{ range index $rte.VALUE.STRING_ATTRIBUTE }}
+                {{.VALUE}} 
+                {{end}}
+                </td>
+            {{end }}
+        </tr>       
+         <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "access_duration" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
+        </tr>
+    </table>
 </div>
