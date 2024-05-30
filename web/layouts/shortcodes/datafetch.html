@@ -9,31 +9,167 @@
   <!--Header-->
     {{ range $rte := where $stringAttributes "TAG"  "header" }}
     <h2>{{ index $rte "VALUE" }}</h2>
-        {{end }}
+        {{end}}
     <!--Keywords-->
-    {{ $rtes := where $setAttributes "TAG" "keywords"}}
-    {{range $ty := index $rtes}}
-    {{range $er := index .VALUE.STRING_ATTRIBUTE }}
-    {{.VALUE}},
-    {{end}}
+    {{range $rte := where $setAttributes "TAG" "keywords"}}
+    {{range $er := index $rte.VALUE.STRING_ATTRIBUTE}}{{.VALUE}},{{end}}
     {{end}}
     <table>
-            <tr>
-         {{ range $rte := where $stringAttributes "TAG"  "header" }}
-         <td>{{ index $rte "VALUE" }}</td>
-             {{end }}
-         </tr>
-        {{ $stringAttributes := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
-        {{ $filtered := where $stringAttributes "TAG" "!=" "header" }}
-        {{ $filtered := where $filtered "TAG" "!=" "rems_link" }}
-        {{ range $filtered }}
-            <tr>
-            <td>{{ replaceRE `(_{1,})` " " .TAG }}</td> 
-           <td>{{ .VALUE }}</td>
+        <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "dataset_name" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
         </tr>
+        <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "dataset_short_name" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
+        </tr>
+        <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "doi" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
+        </tr>
+        <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "animal_species" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
+        </tr>
+        <tr>
+            {{ range $rte := where $stringAttributes "TAG"  "anatomical_site" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>{{ index $rte "VALUE" }}</td>
+            {{end }}
+        </tr>
+        {{$medicalDiagnosis := where $stringAttributes "TAG" "medical_diagnosis"}}
+        {{if gt (len $medicalDiagnosis) 0}}
+            <tr>
+                <td>{{ replaceRE `(_{1,})` " " (index $medicalDiagnosis 0).TAG }}</td>
+                <td>
+                    {{ $length := len $medicalDiagnosis }}
+                    {{ range $index, $rte := $medicalDiagnosis }}
+                        {{ index $rte "VALUE" }}{{ if ne $index (sub $length 1) }}, {{ end }}
+                    {{ end }}
+                </td>
+            </tr>
+        {{end}}
         
-            {{ end }}
-        
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "number_of_wsis" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "number_of_cases" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "number_of_biological_beings" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "number_of_observations" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "dataset_size" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $setAttributes "TAG"  "age_at_extractions" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>
+                    {{ range index $rte.VALUE.STRING_ATTRIBUTE }}
+                    {{.VALUE}}
+                    {{end}}
+                    </td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "geographical_area" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "extraction_method" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "specimen_type" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "image_type" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "image_resolution" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "number_of_annotations" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $numAttributes "TAG"  "year_of_submission" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "dataset_version" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "metadata_standard_version" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "center_name" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "cite_as" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
+            <tr>
+                {{ range $rte := where $stringAttributes "TAG"  "reference" }}
+                    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                    <td>{{ index $rte "VALUE" }}</td>
+                {{end }}
+            </tr>
     </table>
     {{ else }}
         <p>Data for '{{ $variable }}' not found.</p>
