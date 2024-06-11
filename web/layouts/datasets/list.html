@@ -9,7 +9,7 @@
 </script>
 <ul data-pagefind-ignore >
   {{ range .Pages }}
-      <a href="{{ .RelPermalink }}"><p>{{ . }}</p></a>
+      <a href="{{ .RelPermalink }}"><p>{{ .Params.title }}</p></a>
   
   {{ end }}
   </ul>
