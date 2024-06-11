@@ -35,20 +35,30 @@ func markDownCreator() {
 
 		// Read XML file name
 		xmlFileName := filepath.Base(xmlFilePath)
+		fmt.Println(xmlFilePath)
+		xmlContent, err := readXMLFile(xmlFilePath)
+		if err != nil {
+			fmt.Println(err)
+		}
+		headerValue, err := getHeaderValueFromXMLContent(xmlContent)
+		if err != nil {
+			fmt.Println(err)
+		}
 
+		fmt.Printf("Header value: %s\n", headerValue)
 		// Remove file extension
 		fileNameWithoutExt := strings.TrimSuffix(xmlFileName, filepath.Ext(xmlFileName))
 
 		// Markdown content
-		markdownContent := fmt.Sprintf(`
----
+		markdownContent := fmt.Sprintf(`---
+title: "%s"
 ---
 
 {{< datafetch variable="%s" >}}
 
 
 Filename of the associated XML file: %s
-`, fileNameWithoutExt, xmlFileName)
+`, headerValue, fileNameWithoutExt, xmlFileName)
 
 		// Create Markdown file
 		mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")

@@ -50,6 +50,9 @@ func test(DeploymenClient *DeploymentBackend) {
 		if ext == ".css" {
 			contentType = "text/css;"
 		}
+		if ext == ".svg" {
+			contentType = "image/svg+xml;"
+		}
 
 		if err != nil {
 			log.Fatalln("File bytes empty", path, err)
