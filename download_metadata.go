@@ -35,11 +35,9 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 			err := downloadToFile(manager, LocalDirectory, Bucket, aws.ToString(obj.Key))
 			if err != nil {
 				log.Fatal("Error while downloading metadata files from metadata bucket", err)
-			} else {
-				log.Infoln("Completed downloading metadatafiles")
-
 			}
 		}
+		log.Infoln("Completed downloading metadata files")
 
 	}
 

@@ -14,7 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-func test(DeploymenClient *DeploymentBackend) {
+func staticSiteUploader(DeploymenClient *DeploymentBackend) {
 	var (
 		localPath = "web/public/"
 		bucket    = DeploymenClient.Bucket
@@ -50,6 +50,9 @@ func test(DeploymenClient *DeploymentBackend) {
 		if ext == ".css" {
 			contentType = "text/css;"
 		}
+		if ext == ".svg" {
+			contentType = "image/svg+xml;"
+		}
 
 		if err != nil {
 			log.Fatalln("File bytes empty", path, err)
@@ -68,8 +71,10 @@ func test(DeploymenClient *DeploymentBackend) {
 		if err != nil {
 			log.Fatalln("Failed to upload", path, err)
 		}
-		log.Infoln("Uploaded", path, result.Location)
+		log.Debugln("Uploaded", path, result.Location)
 	}
+	log.Infoln("Successfully uploaded built static site to the bucket")
+
 }
 
 type fileWalk chan string

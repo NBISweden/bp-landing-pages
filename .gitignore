@@ -1,4 +1,4 @@
 web/public/*
 web/content/datasets/test*                      
 web/data/*
-dev_utils/config.yaml
+web/static/pagefind/*

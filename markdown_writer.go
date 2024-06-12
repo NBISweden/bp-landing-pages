@@ -35,20 +35,30 @@ func markDownCreator() {
 
 		// Read XML file name
 		xmlFileName := filepath.Base(xmlFilePath)
+		log.Debug(xmlFilePath)
+		xmlContent, err := readXMLFile(xmlFilePath)
+		if err != nil {
+			log.Fatalf("Error reading the XML file %V", err)
+		}
+		headerValue, err := getHeaderValueFromXMLContent(xmlContent)
+		if err != nil {
+			log.Fatal("Error while getting header value from XML file", err)
+		}
 
+		log.Debugln("Header value: %V", headerValue)
 		// Remove file extension
 		fileNameWithoutExt := strings.TrimSuffix(xmlFileName, filepath.Ext(xmlFileName))
 
 		// Markdown content
-		markdownContent := fmt.Sprintf(`
----
+		markdownContent := fmt.Sprintf(`---
+title: "%s"
 ---
 
 {{< datafetch variable="%s" >}}
 
 
 Filename of the associated XML file: %s
-`, fileNameWithoutExt, xmlFileName)
+`, headerValue, fileNameWithoutExt, xmlFileName)
 
 		// Create Markdown file
 		mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")
@@ -66,7 +76,7 @@ Filename of the associated XML file: %s
 			return nil
 		}
 
-		log.Infoln("Markdown file %S created successfully!\n", mdFileName)
+		log.Debug("Markdown file %S created successfully!\n", mdFileName)
 
 		return nil
 	})
@@ -74,4 +84,5 @@ Filename of the associated XML file: %s
 	if err != nil {
 		log.Fatal("Error walking through directory:", err)
 	}
+
 }

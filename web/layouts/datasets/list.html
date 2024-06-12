@@ -1,11 +1,17 @@
 {{ define "main" }}
 <h2> Bigpicture Datasets</h2>
-<ul>
+
+<div id="search">
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        new PagefindUI({ element: "#search", showSubResults: true });
+    });
+</script>
+<ul data-pagefind-ignore >
   {{ range .Pages }}
-      <a href="{{ .RelPermalink }}"><p>HUS mock dataset</p></a>
+      <a href="{{ .RelPermalink }}"><p>{{ .Params.title }}</p></a>
   
   {{ end }}
   </ul>
-{{ .Params.datasets.name }}
 {{ .Content }}
 {{ end }}
