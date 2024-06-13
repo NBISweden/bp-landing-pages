@@ -1,17 +1,19 @@
 {{ define "main" }}
 <h2> Bigpicture Datasets</h2>
-
 <div id="search">
-<script>
-    window.addEventListener('DOMContentLoaded', (event) => {
-        new PagefindUI({ element: "#search", showSubResults: true });
-    });
-</script>
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            new PagefindUI({ element: "#search", showSubResults: true });
+        });
+    </script>
+  </div>
+
 <ul data-pagefind-ignore >
   {{ range .Pages }}
       <a href="{{ .RelPermalink }}"><p>{{ .Params.title }}</p></a>
   
   {{ end }}
   </ul>
-{{ .Content }}
+ 
+  {{ .Content }}
 {{ end }}

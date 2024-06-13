@@ -53,6 +53,12 @@ func staticSiteUploader(DeploymenClient *DeploymentBackend) {
 		if ext == ".svg" {
 			contentType = "image/svg+xml;"
 		}
+		if ext == ".js" {
+			contentType = "application/javascript;"
+		}
+		if ext == ".xml" {
+			contentType = "application/xml;"
+		}
 
 		if err != nil {
 			log.Fatalln("File bytes empty", path, err)
