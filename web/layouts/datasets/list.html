@@ -1,19 +1,20 @@
 {{ define "main" }}
 <h2> Bigpicture Datasets</h2>
-<div id="search">
-    <script>
-        window.addEventListener('DOMContentLoaded', (event) => {
-            new PagefindUI({ element: "#search", showSubResults: true });
-        });
-    </script>
+  <div class="datasets-cards-parent-container">
+    {{ range .Pages }}
+    <div class="dataset-card">
+      <div class="dataset-card-top-section">
+      <div class="dataset-card-image"><img src="{{.Site.BaseURL}}/img/bigpicture_logo.svg" alt="sdf"></div>
+      <div class="dataset-card-title"><h4>{{ .Params.title }}</h4></div>
+      </div>
+      <div class="dataset-card-bottom-section">
+        <div class="dataset-card-doi"><p>DOI: {{.Params.doi}}</p></div>
+        <div class="dataset-card-descrition"></div>
+      </div>
+    </div>
+    {{end}}
   </div>
 
-<ul data-pagefind-ignore >
-  {{ range .Pages }}
-      <a href="{{ .RelPermalink }}"><p>{{ .Params.title }}</p></a>
-  
-  {{ end }}
-  </ul>
  
   {{ .Content }}
 {{ end }}
