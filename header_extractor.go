@@ -24,22 +24,30 @@ type StringAttribute struct {
 	Value string `xml:"VALUE"`
 }
 
-// Function to extract header value from XML content
-func getHeaderValueFromXMLContent(xmlContent []byte) (string, error) {
+func getHeaderValueFromXMLContent(xmlContent []byte) (string, string, error) {
 	var landingPageSet LandingPageSet
 	err := xml.Unmarshal(xmlContent, &landingPageSet)
 	if err != nil {
-		log.Fatal("Unmarshalling XML file for header failed", err)
+		log.Fatal("Unmarshalling XML file failed", err)
 	}
 
-	// Iterate over the string attributes to find the header value
+	var header, doi string
+
+	// Iterate over the string attributes to find the header and doi values
 	for _, attr := range landingPageSet.LandingPage.Attributes.StringAttributes {
-		if attr.Tag == "header" {
-			return attr.Value, nil
+		switch attr.Tag {
+		case "header":
+			header = attr.Value
+		case "doi":
+			doi = attr.Value
 		}
 	}
-	return "sf", err
 
+	if header == "" {
+		return "", "", err
+	}
+
+	return header, doi, nil
 }
 
 // Function to read the XML file and return its content

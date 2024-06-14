@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.LanguageCode }}">
+<html lang="{{ .Site.LanguageCode }}"> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 {{ partial "head.html" . }}
 
@@ -7,15 +7,12 @@
     {{ partial "nav.html" . }}
 <!-- Page Header -->
 
-<header class="page-header" ,role="banner" >
-                <h1 class="project-name" >{{ .Site.Title}} </h1>
-                <h2 class="project-tagline">{{ .Site.Params.slogan }}</h2>
-</header>
     <main id="content" class="main-content" role="main">
 {{ block "main" . }}
 
 {{ end }}
 
 </main>
+{{ partial "footer.html" . }}
 </body>
 </html>

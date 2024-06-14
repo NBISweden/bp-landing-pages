@@ -40,7 +40,7 @@ func markDownCreator() {
 		if err != nil {
 			log.Fatalf("Error reading the XML file %V", err)
 		}
-		headerValue, err := getHeaderValueFromXMLContent(xmlContent)
+		headerValue, doiValue, err := getHeaderValueFromXMLContent(xmlContent)
 		if err != nil {
 			log.Fatal("Error while getting header value from XML file", err)
 		}
@@ -52,13 +52,14 @@ func markDownCreator() {
 		// Markdown content
 		markdownContent := fmt.Sprintf(`---
 title: "%s"
+doi: "%s"
 ---
 
 {{< datafetch variable="%s" >}}
 
 
 Filename of the associated XML file: %s
-`, headerValue, fileNameWithoutExt, xmlFileName)
+`, headerValue, doiValue, fileNameWithoutExt, xmlFileName)
 
 		// Create Markdown file
 		mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")

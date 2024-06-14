@@ -2,22 +2,7 @@
 
 <div class="topnav" id="navbar">
     
-            <script>
-var navbar = document.getElementById('navbar');
-  var navbarHeight = navbar.offsetHeight;
-  window.addEventListener('scroll', function() {
-    if (window.scrollY > 0) {
-      navbar.classList.add('shrink');
-    } else {
-      navbar.classList.remove('shrink');
-      navbar.style.position = 'initial';
-    }
-    if (window.scrollY >= navbarHeight) {
-      navbar.style.position = 'fixed';
-      navbar.style.top = '0';
-    } 
-  });
-</script> 
+  
 
 <div class="logo-nav-container">
 <img id = "nav-logo" src="{{.Site.BaseURL}}/img/bigpicture_logo.svg"> 
