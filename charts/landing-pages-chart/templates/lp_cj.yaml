@@ -31,7 +31,7 @@ spec:
                     - name: lp-generator-container
                       image: {{ .Values.images.lp_image }}
                       imagePullPolicy: Always
-                      command: ["sh" , "-c", "cp app -r web tmp/ && /tmp/app"]
+                      command: ["sh" , "-c", "cp /app -r /web /tmp && cd /tmp && /app"]
                       env:
                       - name: CONFIGFILE  
                         value: "/.secrets/config.yaml"
