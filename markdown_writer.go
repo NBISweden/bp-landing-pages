@@ -2,17 +2,16 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func markDownCreator() {
-	// XML directory path (change this to your XML directory path)
-	xmlDirPath := "web/data/datasets/"
-
+	// Datasets directory path (change this to your XML directory path)
+	DatasetDirectory := "web/data/datasets/"
 	// Directory to save Markdown files
 	markdownDir := "web/content/datasets/"
 
@@ -23,34 +22,59 @@ func markDownCreator() {
 	}
 
 	// Walk through the XML directory
-	err := filepath.Walk(xmlDirPath, func(xmlFilePath string, info os.FileInfo, err error) error {
-		if err != nil {
-			log.Fatal("Error accessing file", err)
-			return nil
-		}
-		// Skip directories
-		if info.IsDir() {
-			return nil
-		}
+	DatasetDirs, err := os.ReadDir(markdownDir)
+	for _, e := range DatasetDirs {
+		if e.IsDir() {
+			filepath.WalkDir(filepath.Join(markdownDir, e.Name()), func(path string, d os.DirEntry, err error) error {
+				if filepath.Ext(d.Name()) == ".xml" {
+					fmt.Println(filepath.Rel(e.Name(), d.Name()))
+					xmlpath := filepath.Join(markdownDir, e.Name(), "LANDING_PAGE", d.Name())
+					fmt.Println("path ", xmlpath)
+					xmlContent, err := os.Open(xmlpath)
+					if err != nil {
+						log.Error("error", err)
+					}
+					defer xmlContent.Close()
+					if err != nil {
+						log.Error("error", err)
+					}
+					outfile, err := os.Create(filepath.Join(DatasetDirectory, e.Name()+".xml"))
+					if err != nil {
+						log.Println("error writing xml file", err)
+					}
+					fmt.Println(xmlContent)
+					_, err = io.Copy(outfile, xmlContent)
+					if err != nil {
+						log.Println("error writing xml file", err)
+					}
 
-		// Read XML file name
-		xmlFileName := filepath.Base(xmlFilePath)
-		log.Debug(xmlFilePath)
-		xmlContent, err := readXMLFile(xmlFilePath)
-		if err != nil {
-			log.Fatalf("Error reading the XML file %V", err)
-		}
-		headerValue, doiValue, err := getHeaderValueFromXMLContent(xmlContent)
-		if err != nil {
-			log.Fatal("Error while getting header value from XML file", err)
-		}
+				}
 
-		log.Debugln("Header value: %V", headerValue)
-		// Remove file extension
-		fileNameWithoutExt := strings.TrimSuffix(xmlFileName, filepath.Ext(xmlFileName))
+				return nil
+			})
+		}
+	}
+	if err != nil {
+		log.Fatal("Error accessing file", err)
+	}
 
-		// Markdown content
-		markdownContent := fmt.Sprintf(`---
+	// Read XML file name
+	log.Debug("getting info for file", DatasetDirectory)
+	xmlContent, err := readXMLFile(DatasetDirectory)
+	if err != nil {
+		log.Fatalf("Error reading the XML file %V", err)
+	}
+	headerValue, doiValue, err := getHeaderValueFromXMLContent(xmlContent)
+	if err != nil {
+		log.Fatal("Error while getting header value from XML file", err)
+	}
+
+	log.Debugln("Header value: %V", headerValue)
+	// Remove file extension
+	fileNameWithoutExt := DatasetDirectory
+
+	// Markdown content
+	markdownContent := fmt.Sprintf(`---
 title: "%s"
 doi: "%s"
 ---
@@ -59,28 +83,23 @@ doi: "%s"
 
 
 Filename of the associated XML file: %s
-`, headerValue, doiValue, fileNameWithoutExt, xmlFileName)
+`, headerValue, doiValue, fileNameWithoutExt, DatasetDirectory)
 
-		// Create Markdown file
-		mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")
-		mdFile, err := os.Create(mdFileName)
-		if err != nil {
-			log.Fatal("Error creating Markdown file %V", err)
-			return nil
-		}
-		defer mdFile.Close()
+	// Create Markdown file
+	mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")
+	mdFile, err := os.Create(mdFileName)
+	if err != nil {
+		log.Fatal("Error creating Markdown file %V", err)
+	}
+	defer mdFile.Close()
 
-		// Write Markdown content to the file
-		_, err = mdFile.WriteString(markdownContent)
-		if err != nil {
-			log.Fatal("Error writing to Markdown file %V", mdFileName, err)
-			return nil
-		}
+	// Write Markdown content to the file
+	_, err = mdFile.WriteString(markdownContent)
+	if err != nil {
+		log.Fatal("Error writing to Markdown file %V", mdFileName, err)
+	}
 
-		log.Debug("Markdown file %S created successfully!\n", mdFileName)
-
-		return nil
-	})
+	log.Debug("Markdown file %S created successfully!\n", mdFileName)
 
 	if err != nil {
 		log.Fatal("Error walking through directory:", err)
