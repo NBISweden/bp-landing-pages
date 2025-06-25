@@ -34,7 +34,6 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 			log.Fatalln("Error while paginating the s3 bucket", err)
 		}
 		for _, obj := range page.Contents {
-			fmt.Println(filepath.Ext(aws.ToString(obj.Key)))
 			if filepath.Ext(aws.ToString(obj.Key)) == ".xml" {
 				err := downloadToFile(manager, LocalDirectory, Bucket, aws.ToString(obj.Key))
 				if err != nil {
