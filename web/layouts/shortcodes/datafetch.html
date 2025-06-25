@@ -1,6 +1,6 @@
 {{- $variable := .Get "variable" -}}
 <div data-pagefind-body >
-    {{ $data := index .Site.Data.datasets $variable }}
+    {{ $data := index .Site.Data $variable }}
     {{ if $data }}
     <!--Indexing subset of attributes-->
     {{ $stringAttributes := index $data.LANDING_PAGE.ATTRIBUTES.STRING_ATTRIBUTE }}
@@ -11,9 +11,7 @@
     <h2>{{ index $rte "VALUE" }}</h2>
         {{end}}
     <!--Keywords-->
-    {{range $rte := where $setAttributes "TAG" "keywords"}}
-    {{range $er := index $rte.VALUE.STRING_ATTRIBUTE}}{{.VALUE}},{{end}}
-    {{end}}
+
     <table>
         <tr>
             {{ range $rte := where $stringAttributes "TAG"  "dataset_name" }}
@@ -123,7 +121,7 @@
                 {{end }}
             </tr>
             <tr>
-                {{ range $rte := where $numAttributes "TAG"  "image_resolution" }}
+                {{ range $rte := where $numAttributes "TAG"  "image_resolutions" }}
                     <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
                     <td>{{ index $rte "VALUE" }}</td>
                 {{end }}
@@ -170,6 +168,64 @@
                     <td>{{ index $rte "VALUE" }}</td>
                 {{end }}
             </tr>
+             <tr>
+            {{ range $rte := where $setAttributes "TAG"  "stainings" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>
+                {{ $stains := index $rte "VALUE" "STRING_ATTRIBUTE" }}
+                    {{range $atts := $stains }}
+                        {{ $vals := index $atts   }}
+                            {{ range $key, $val := $vals }}
+                                {{ if eq $key "VALUE" }}
+                                    {{ $val }} </br>
+                                {{ end }}
+                            {{ end }}
+                    {{ end }}
+                    </td>
+            {{end }}
+        </tr>
+            <tr>
+            {{ range $rte := where $setAttributes "TAG"  "medical_diagnoses" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>
+                {{ $stains := index $rte "VALUE" "STRING_ATTRIBUTE" }}
+                    {{range $atts := $stains }}
+                        {{ $vals := index $atts   }}
+                            {{ range $key, $val := $vals }}
+                                {{ if eq $key "VALUE" }}
+                                    {{ $val }} </br>
+                                {{ end }}
+                            {{ end }}
+                    {{ end }}
+                    </td>
+            {{end }}
+        </tr>
+           <tr>
+            {{ range $rte := where $setAttributes "TAG"  "image_types" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>
+                {{ $stains := index $rte "VALUE" "STRING_ATTRIBUTE" }}
+                    {{range $atts := $stains }}
+                        {{ $vals := index $atts   }}
+                         {{ $vals }}
+                    {{ end }}
+                    </td>
+            {{ end }}
+        </tr>
+         <tr>
+            {{ range $rte := where $setAttributes "TAG"  "image_resolutions" }}
+                <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+                <td>
+                {{ $stains := index $rte "VALUE" "NUMERIC_ATTRIBUTE" }}
+                    {{range $atts := $stains }}
+                        {{ $vals := index $atts   }}
+                         {{ $vals }}
+                    {{ end }}
+                    </td>
+            {{ end }}
+        </tr>
+
+
     </table>
     {{ else }}
         <p>Data for '{{ $variable }}' not found.</p>
@@ -191,7 +247,7 @@
             {{ range $rte := where $stringAttributes "TAG"  "permitted_use_or_purpose" }}
                 <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
                 <td>{{ index $rte "VALUE" }}</td>
-            {{end }}
+            {{ end }}
         </tr>
         <tr>
             {{ range $rte := where $setAttributes "TAG"  "use_restrictions" }}
@@ -201,7 +257,7 @@
                 {{.VALUE}}
                 {{end}}
                 </td>
-            {{end }}
+            {{ end }}
         </tr>
         <tr>
             {{ range $rte := where $setAttributes "TAG"  "allowed_geographical_distribution" }}
@@ -211,13 +267,13 @@
                 {{.VALUE}} 
                 {{end}}
                 </td>
-            {{end }}
+            {{ end }}
         </tr>       
          <tr>
             {{ range $rte := where $stringAttributes "TAG"  "access_duration" }}
                 <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
                 <td>{{ index $rte "VALUE" }}</td>
-            {{end }}
+            {{ end }}
         </tr>
     </table>
     <h2><a href = "/">Policy text</a> </h2>
