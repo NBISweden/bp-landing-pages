@@ -5,7 +5,7 @@
     <div class="dataset-card">
       <div class="dataset-card-top-section">
       <div class="dataset-card-image"><img src="{{.Site.BaseURL}}/img/bigpicture_logo.svg" alt="sdf"></div>
-      <div class="dataset-card-title"><h4>{{ .Params.title }}</h4></div>
+      <div class="dataset-card-title"><a href="{{ .RelPermalink }}"><h4>{{ .Params.title }}</h4></a>  </div>
       </div>
       <div class="dataset-card-bottom-section">
         <div class="dataset-card-doi"><p>DOI: {{.Params.doi}}</p></div>
