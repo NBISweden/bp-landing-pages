@@ -143,10 +143,19 @@
       {{ end }}
     </table>
 
-    <h2>Comments</h2>
-    {{ range (where $setAttributes "TAG" "comments") }}
-      <p>{{ index .VALUE.STRING_ATTRIBUTE "VALUE" }}</p>
+<h2>Comments</h2>
+{{ range (where $setAttributes "TAG" "comments") }}
+  {{ $value := .VALUE }}
+  {{ if $value }}
+    {{ with index $value "STRING_ATTRIBUTE" }}
+      <p>{{ .VALUE }}</p>
+    {{ else }}
+      <p><em>No comment provided.</em></p>
     {{ end }}
+  {{ else }}
+    <p><em>No comment provided.</em></p>
+  {{ end }}
+{{ end }}
 
     <h2>Terms of use</h2>
     <table>
