@@ -10,6 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: {{ .Values.bucketUrl }}/$1
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/app-root: /index.html
+    xnginx.ingress.kubernetes.io/upstream-vhost: echo.free.beeceptor.com
   name: my-ingress
   namespace: {{ .Values.namespace }}
 spec:
@@ -29,5 +30,5 @@ spec:
             port:
               number: 443
         path: /(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
   
