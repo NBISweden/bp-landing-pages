@@ -2,3 +2,5 @@ web/public/*
 web/content/datasets/test*                      
 web/data/*
 web/static/pagefind/*
+web/static/img/aa-*
+web/content/datasets/aa-*

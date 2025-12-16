@@ -11,5 +11,5 @@ S3DeploymentBucket:
   accesskey: "myaccesskey"
   secretkey: "mysecretkey"
   region: "us-east-1"
-  bucket: "deply/"
+  bucket: "deploy/"
 
