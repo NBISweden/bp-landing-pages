@@ -37,18 +37,18 @@ func markDownCreator() {
 
 		// Read XML file name
 		xmlFileName := filepath.Base(xmlFilePath)
+		fileNameWithoutExt := strings.TrimSuffix(xmlFileName, filepath.Ext(xmlFileName))
 		log.Debug(xmlFilePath)
 		xmlContent, err := readXMLFile(xmlFilePath)
 		if err != nil {
 			log.Fatalf("Error reading the XML file %V", err)
 		}
-		front, body, err := markdownWriter(xmlContent)
+		front, body, err := markdownWriter(xmlContent, fileNameWithoutExt)
 		if err != nil {
 			log.Fatal("Error while getting header value from XML file", err)
 		}
 
 		// Remove file extension
-		fileNameWithoutExt := strings.TrimSuffix(xmlFileName, filepath.Ext(xmlFileName))
 
 		// Create Markdown file
 		mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")

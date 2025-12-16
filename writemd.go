@@ -113,7 +113,7 @@ func writeListField(b *strings.Builder, key string, values []string) {
 	}
 }
 
-func toFrontMatter(lp LandingPage) string {
+func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 	attrs := lp.Attributes
 	var b strings.Builder
 	b.WriteString("---\n")
@@ -143,7 +143,7 @@ func toFrontMatter(lp LandingPage) string {
 	writeStringField(&b, "number_of_annotations", attrs.GetNumber("number_of_annotations"))
 	writeStringField(&b, "dataset_size", attrs.GetNumber("dataset_size"))
 	writeStringField(&b, "year_of_submission", attrs.GetNumber("year_of_submission"))
-
+	writeStringField(&b, "dataset_description", attrs.GetString("dataset_description"))
 	// Set fields
 	writeListField(&b, "keywords", attrs.GetSet("keywords"))
 	writeListField(&b, "animal_species", attrs.GetSet("animal_species"))
@@ -171,7 +171,7 @@ func toFrontMatter(lp LandingPage) string {
 	if len(lp.SampleImageFiles.Files) > 0 {
 		b.WriteString("sample_images:\n")
 		for _, f := range lp.SampleImageFiles.Files {
-			b.WriteString("  - filename: \"" + f.Filename + "\"\n")
+			b.WriteString("  - filename: \"" + "/" + "img" + "/" + fileNameWithoutExt + "/" + strings.TrimPrefix(f.Filename, "LANDING_PAGE/THUMBNAILS/") + "\"\n")
 			b.WriteString("    filetype: \"" + f.Filetype + "\"\n")
 			if f.Checksum != "" {
 				b.WriteString("    checksum: \"" + f.Checksum + "\"\n")
@@ -186,14 +186,14 @@ func toFrontMatter(lp LandingPage) string {
 	return b.String()
 }
 
-func markdownWriter(xmlContent []byte) (string, string, error) {
+func markdownWriter(xmlContent []byte, fileNameWithoutExt string) (string, string, error) {
 
 	var set LandingPageSet
 	if err := xml.Unmarshal(xmlContent, &set); err != nil {
 		return "", "", err
 	}
 
-	front := toFrontMatter(set.Pages[0])
+	front := toFrontMatter(set.Pages[0], fileNameWithoutExt)
 
 	// Get description for body
 	body := ""

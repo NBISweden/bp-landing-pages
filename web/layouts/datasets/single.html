@@ -1,18 +1,21 @@
 {{ define "main" }}
-<div class="info-box">
-  <p>{{ .Params.dataset_title }}</p>
-  <h2>Sample images</h2>
-  <p>Sample images with reduced image quality. Please click to preview.</p>
- 
-  <div>
-    <ul class="dataset-example-images" id="dataset-example-images">
-      {{ range .Params.sample_images }}
-      <li><img src="{{ $.Site.BaseURL }}{{ .filename }}"></li>
-      {{ end }}
-    </ul>
+<div>
+ <header>
+  <div class="meta">
+    <h1>{{ .Params.dataset_title }}</h1>
+    <strong>Doi:</strong> {{ .Params.dataset_title }}<br/>
+    <strong>Year:</strong> {{ .Params.year }}<br/>
   </div>
+</header>
 
-  <h2 class="dataset-information">Dataset information</h2>
+<div class="grid">
+   <div>
+    <div class="panel">
+      <h3>Description</h3>
+      <p>{{ .Params.dataset_description }}</p>
+    </div>
+   <div class="panel">
+      <h3>Dataset Overview</h3>
   <table>
     <tr>
       <th>Title</th>
@@ -143,29 +146,10 @@
       <td>{{ .Params.access_approval_process }}</td>
     </tr>
     <tr>
-      <th>Allowed geographical distribution</th>
-      <td>{{ .Params.allowed_geographical_distribution }}</td>
-    </tr>
-    <tr>
-      <th>Geographical areas</th>
-      <td>
-        {{ range .Params.geographical_areas }}
-        <p>{{ . }}</p>
-        {{ end }}
-      </td>
-    </tr>
-    <tr>
       <th>Duration of use</th>
       <td>{{ .Params.duration_of_use }}</td>
     </tr>
-    <tr>
-      <th>Allowed uses</th>
-      <td>
-        {{ range .Params.allowed_uses }}
-        <p>{{ . }}</p>
-        {{ end }}
-      </td>
-    </tr>
+
     <tr>
       <th>Center name</th>
       <td>{{ .Params.center_name }}</td>
@@ -179,6 +163,49 @@
       <td>{{ .Params.metadata_standard_version }}</td>
     </tr>
   </table>
+  </div>
+     <div class="panel">
+      <h3>Terms of use</h3>
+      <table>
+            <tr>
+      <th>Allowed uses</th>
+      <td>
+        {{ range .Params.allowed_uses }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+          <tr>
+      <th>Allowed geographical distribution</th>
+      <td>{{ .Params.allowed_geographical_distribution }}</td>
+    </tr>
+    <tr>
+      <th>Geographical areas</th>
+      <td>
+        {{ range .Params.geographical_areas }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+  
+      </table>
+     </div>
+
+    </div>
+     <aside>
+    <div class="panel">
+      <h3>Sample Images</h3>
+
+       <div>
+        <ul class="dataset-example-images" id="dataset-example-images" >
+        {{range .Params.sample_images }}
+       <li><img src="{{.Site.BaseURL}}{{ .filename }}"></li>
+      {{ end }}  
+      </ul>
+
+       </div>
+    </div>
+ </aside>
 </div>
 
 {{ .Content }}
