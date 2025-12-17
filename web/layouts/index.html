@@ -1,36 +1,39 @@
 {{ define "main" }}
   <div data-pagefind-ignore="all" class="container">
-    <main id="content" class="main-content" role="main" >
+    <main id="content" class="main-content" role="main">
        
-          <script>
-          window.addEventListener('DOMContentLoaded', (event) => {
-              new PagefindUI({ element: "#search", showSubResults: true });
-          });
-          
-        </script>
-         <h2>Bigpicture Dataset search</h2>
-         <div style="max-height: 1%;">
-        <div id="search" style="overflow-x: auto;">
-        </div>
-        </div>
-        <h2 style="margin-top: 5rem;">Explore Bigpicture datasets</h2>
-        <div class="datasets-cards-parent-container">
-          {{ range where .Site.RegularPages "Section" "datasets" }}
-          <div class="dataset-card">
-            <div class="dataset-card-top-section">
-            <div class="dataset-card-image"><img src="{{.Site.BaseURL}}/img/bigpicture_logo.svg" alt="sdf"></div>
-            <div class="dataset-card-title"><a href="{{ .RelPermalink }}"><h4>{{ .Params.title }}</h4></a></div>
+      <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+          new PagefindUI({ element: "#search", showSubResults: true });
+        });
+      </script>
+      
+      <h2>Bigpicture Dataset search</h2>
+      <div style="max-height: 1%;">
+        <div id="search" style="overflow-x: auto;"></div>
+      </div>
+      
+      <h2 style="margin-top: 5rem;">Explore Bigpicture datasets</h2>
+      
+      <div class="dataset-grid">
+        {{ range where .Site.RegularPages "Section" "datasets" }}
+        <a href="{{ .RelPermalink }}" class="dataset-card">
+          <div class="card-body">
+            <h4 class="card-title">{{ .Params.dataset_title }}</h4>
+            <div class="card-short-name">DOI: {{ .Params.doi }}</div>
+            <p class="card-description">{{ .Params.description | default .Summary | truncate 150 }}</p>
+            {{ if .Params.keywords }}
+            <div class="card-keywords">
+              {{ range .Params.keywords }}
+              <span class="keyword-tag">{{ . }}</span>
+              {{ end }}
             </div>
-            <div class="dataset-card-bottom-section">
-              <div class="dataset-card-doi"><p>DOI: {{.Params.doi}}</p></div>
-              <div class="dataset-card-descrition"></div>
-            </div>
+            {{ end }}
           </div>
-          {{end}}
-        </div>
-        
+        </a>
+        {{ end }}
+      </div>
        
     </main>
-    
-</div>
+  </div>
 {{ end }}

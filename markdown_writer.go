@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,9 +8,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func readXMLFile(filePath string) ([]byte, error) {
+	return os.ReadFile(filePath)
+}
 func markDownCreator() {
 	// XML directory path (change this to your XML directory path)
-	xmlDirPath := "web/data/"
+	xmlDirPath := "web/data/tmp/"
 
 	// Directory to save Markdown files
 	markdownDir := "web/content/datasets/"
@@ -35,31 +37,18 @@ func markDownCreator() {
 
 		// Read XML file name
 		xmlFileName := filepath.Base(xmlFilePath)
+		fileNameWithoutExt := strings.TrimSuffix(xmlFileName, filepath.Ext(xmlFileName))
 		log.Debug(xmlFilePath)
 		xmlContent, err := readXMLFile(xmlFilePath)
 		if err != nil {
 			log.Fatalf("Error reading the XML file %V", err)
 		}
-		headerValue, doiValue, err := getHeaderValueFromXMLContent(xmlContent)
+		front, err := markdownWriter(xmlContent, fileNameWithoutExt)
 		if err != nil {
 			log.Fatal("Error while getting header value from XML file", err)
 		}
 
-		log.Debugln("Header value: %V", headerValue)
 		// Remove file extension
-		fileNameWithoutExt := strings.TrimSuffix(xmlFileName, filepath.Ext(xmlFileName))
-
-		// Markdown content
-		markdownContent := fmt.Sprintf(`---
-title: "%s"
-doi: "%s"
----
-
-{{< datafetch variable="%s" >}}
-
-
-Filename of the associated XML file: %s
-`, headerValue, doiValue, fileNameWithoutExt, xmlFileName)
 
 		// Create Markdown file
 		mdFileName := filepath.Join(markdownDir, fileNameWithoutExt+".md")
@@ -71,7 +60,7 @@ Filename of the associated XML file: %s
 		defer mdFile.Close()
 
 		// Write Markdown content to the file
-		_, err = mdFile.WriteString(markdownContent)
+		_, err = mdFile.WriteString((front))
 		if err != nil {
 			log.Fatal("Error writing to Markdown file %V", mdFileName, err)
 			return nil

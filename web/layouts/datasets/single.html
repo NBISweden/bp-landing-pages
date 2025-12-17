@@ -1,7 +1,227 @@
 {{ define "main" }}
+<div>
+ <header>
+  <div class="meta">
+    <h1>{{ .Params.dataset_title }}</h1>
+    <strong>Doi:</strong> {{ .Params.doi }}<br/>
+    <strong>Year:</strong> {{ .Params.year }}<br/>
+  </div>
+</header>
 
+<div class="grid">
+   <div>
+    <div class="panel">
+      <h3>Description</h3>
+      <p>{{ .Params.dataset_description }}</p>
+    </div>
+   <div class="panel">
+      <h3>Dataset Overview</h3>
+  <table>
+    <tr>
+      <th>Title</th>
+      <td>{{ .Params.dataset_title }}</td>
+    </tr>
+    <tr>
+      <th>Short name</th>
+      <td>{{ .Params.dataset_short_name }}</td>
+    </tr>
+    <tr>
+      <th>Age at extraction</th>
+      <td>
+        {{ range .Params.age_at_extractions }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Anatomical site</th>
+      <td>
+        {{ range .Params.anatomical_sites }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Animal species</th>
+      <td>
+        {{ range .Params.animal_species }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Specimen types</th>
+      <td>
+        {{ range .Params.specimen_types }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Image type</th>
+      <td>
+        {{ range .Params.image_types }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Extraction method</th>
+      <td>
+        {{ range .Params.extraction_methods }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Image resolution</th>
+      <td>
+        {{ range .Params.image_resolutions }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Type of access</th>
+      <td>{{ .Params.type_of_access }}</td>
+    </tr>
+    <tr>
+      <th>Staining</th>
+      <td>
+        {{ range .Params.stainings }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Cite as</th>
+      <td>{{ .Params.cite_as }}</td>
+    </tr>
+    <tr>
+      <th>Keywords</th>
+      <td>
+        {{ range .Params.keywords }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Year</th>
+      <td>{{ .Params.year_of_submission }}</td>
+    </tr>
+    <tr>
+      <th>DOI</th>
+      <td>
+        {{ if .Params.doi }}
+        <a href="https://doi.org/{{ .Params.doi }}">{{ .Params.doi }}</a>
+        {{ end }}
+      </td>
+    </tr>
+    <tr>
+      <th>Version</th>
+      <td>{{ .Params.dataset_version }}</td>
+    </tr>
+    <tr>
+      <th>Number of WSIs</th>
+      <td>{{ .Params.number_of_wsis }}</td>
+    </tr>
+    <tr>
+      <th>Number of cases</th>
+      <td>{{ .Params.number_of_cases }}</td>
+    </tr>
+    <tr>
+      <th>Number of biological beings</th>
+      <td>{{ .Params.number_of_biological_beings }}</td>
+    </tr>
+    <tr>
+      <th>Annotations</th>
+      <td>{{ .Params.number_of_annotations }}</td>
+    </tr>
+    <tr>
+      <th>Size</th>
+      <td>{{ .Params.dataset_size }}</td>
+    </tr>
+    <tr>
+      <th>Access approval process</th>
+      <td>{{ .Params.access_approval_process }}</td>
+    </tr>
+    <tr>
+      <th>Duration of use</th>
+      <td>{{ .Params.duration_of_use }}</td>
+    </tr>
 
+    <tr>
+      <th>Center name</th>
+      <td>{{ .Params.center_name }}</td>
+    </tr>
+    <tr>
+      <th>Dataset reference</th>
+      <td>{{ .Params.dataset_ref }}</td>
+    </tr>
+    <tr>
+      <th>Metadata standard version</th>
+      <td>{{ .Params.metadata_standard_version }}</td>
+    </tr>
+  </table>
+  </div>
+     <div class="panel">
+      <h3>Terms of use</h3>
+      <table>
+            <tr>
+      <th>Allowed uses</th>
+      <td>
+        {{ range .Params.allowed_uses }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+          <tr>
+      <th>Allowed geographical distribution</th>
+      <td>{{ .Params.allowed_geographical_distribution }}</td>
+    </tr>
+    <tr>
+      <th>Geographical areas</th>
+      <td>
+        {{ range .Params.geographical_areas }}
+        <p>{{ . }}</p>
+        {{ end }}
+      </td>
+    </tr>
+  
+      </table>
+      
+     </div>
+      <div class="panel">
+      <h3>Policy & Terms of Use</h3>
+      {{ if .Params.policy_text }}
+        <pre class="policy">{{ .Params.policy_text }}</pre>
+      {{ else }}
+        <p><em>No policy text provided.</em></p>
+      {{ end }}
+    </div>
+    </div>
+     <aside>
+    <div class="panel">
+      <h3>Sample Images</h3>
+
+       <div>
+        <ul class="dataset-example-images" id="dataset-example-images" >
+        {{range .Params.sample_images }}
+       <li><img src="{{.Site.BaseURL}}{{ .filename }}"></li>
+      {{ end }}  
+      </ul>
+
+       </div>
+    </div>
+ </aside>
+</div>
 
 {{ .Content }}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.js"></script>
+<script>
+  const gallery = new Viewer(document.getElementById('dataset-example-images'), { url: "data-original" });
+</script>
 
 {{ end }}

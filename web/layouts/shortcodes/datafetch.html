@@ -20,18 +20,21 @@
           </tr>
         {{ end }}
       {{ end }}
-
-      {{- $medicalDiagnosis := where $stringAttributes "TAG" "medical_diagnosis" -}}
-      {{- if gt (len $medicalDiagnosis) 0 -}}
-        <tr>
-          <td>Medical Diagnosis</td>
-          <td>
-            {{- range $i, $rte := $medicalDiagnosis -}}
-              {{ $rte.VALUE }}{{ if ne $i (sub (len $medicalDiagnosis) 1) }}, {{ end }}
-            {{- end -}}
-          </td>
-        </tr>
+{{- $medicalDiagnoses := where $stringAttributes "TAG" "medical_diagnoses" -}}
+{{- if gt (len $medicalDiagnoses) 0 -}}
+  {{- $diagnosesContainer := index $medicalDiagnoses 0 -}}
+  {{- if $diagnosesContainer.VALUE -}}
+    {{- $nestedDiagnoses := where $diagnosesContainer.VALUE "TAG" "medical_diagnosis" -}}
+    {{- if gt (len $nestedDiagnoses) 0 -}}
+      {{- range $nestedDiagnoses -}}
+        {{- if and .VALUE (ne .VALUE "") -}}
+          {{ .VALUE.VALUE }}
+        {{- end -}}
       {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
 
       {{ range (slice "number_of_wsis" "number_of_cases" "number_of_biological_beings" "number_of_observations" "dataset_size" "image_resolutions" "number_of_annotations" "year_of_submission") }}
         {{- $tag := . -}}
@@ -61,27 +64,37 @@
         </tr>
       {{ end }}
 
-      {{ range (where $setAttributes "TAG" "stainings") }}
-        <tr>
-          <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
-          <td>
-            {{ range .VALUE.STRING_ATTRIBUTE }}
-              {{ if .VALUE }}{{ .VALUE }}<br>{{ end }}
-            {{ end }}
-          </td>
-        </tr>
+{{ range (where $setAttributes "TAG" "stainings") }}
+  <tr>
+    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+    <td>
+      {{ $attr := .VALUE.STRING_ATTRIBUTE }}
+      {{ if reflect.IsSlice $attr }}
+        {{ range $attr }}
+          {{ if .VALUE }}{{ .VALUE }}<br>{{ end }}
+        {{ end }}
+      {{ else }}
+        {{ if $attr }}{{ $attr }}<br>{{ end }}
       {{ end }}
+    </td>
+  </tr>
+{{ end }}
 
-      {{ range (where $setAttributes "TAG" "medical_diagnoses") }}
-        <tr>
-          <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
-          <td>
-            {{ range .VALUE.STRING_ATTRIBUTE }}
-              {{ if .VALUE }}{{ .VALUE }}<br>{{ end }}
-            {{ end }}
-          </td>
-        </tr>
+    {{ range (where $setAttributes "TAG" "medical_diagnoses") }}
+  <tr>
+    <td>{{ replaceRE `(_{1,})` " " .TAG }}</td>
+    <td>
+      {{ $attr := .VALUE.STRING_ATTRIBUTE }}
+      {{ if reflect.IsSlice $attr }}
+        {{ range $attr }}
+          {{ with .VALUE }}{{ . }}<br>{{ end }}
+        {{ end }}
+      {{ else if $attr }}
+        {{ $attr }}<br>
       {{ end }}
+    </td>
+  </tr>
+{{ end }}
 
       {{ range (where $setAttributes "TAG" "image_types") }}
         <tr>
