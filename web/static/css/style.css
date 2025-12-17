@@ -1,11 +1,7 @@
-html {
-  font-size: 16px;
-height: 100%;
-}
 
 
 /* Remove margin from body */
-body {
+html body {
   min-height: 100%;
   margin: 0;
  font-family:"Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -118,7 +114,7 @@ body {
 .main-content h4,
 .main-content h5,
 .main-content h6 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 
@@ -131,20 +127,11 @@ body {
 }
 
 .site-footer { 
+  display: block;
   padding: 5rem;
   margin-bottom: 0;
  }
- .footer-columns{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
- }
- .footer-container{
-  padding: 10px;
-  height: 50px;
-  margin: 50px;
 
- }
 
  dl{display:grid;grid-template-columns:200px 1fr;gap:10px 16px;margin:0}
   dt{font-weight:600;color:#333}

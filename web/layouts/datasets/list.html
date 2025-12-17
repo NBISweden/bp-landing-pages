@@ -5,7 +5,9 @@
         <a href="{{ .RelPermalink }}" class="dataset-card">
           <div class="card-body">
             <h4 class="card-title">{{ .Params.dataset_title }}</h4>
+            {{ if .Params.doi }}
             <div class="card-short-name">DOI: {{ .Params.doi }}</div>
+            {{ end }}
             <p class="card-description">{{ .Params.description | default .Summary | truncate 150 }}</p>
             {{ if .Params.keywords }}
             <div class="card-keywords">

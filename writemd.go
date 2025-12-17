@@ -94,9 +94,10 @@ func (a Attributes) GetSet(tag string) []string {
 }
 
 func escapeYAML(s string) string {
-	return strings.ReplaceAll(s, "\"", "'")
+	s = strings.ReplaceAll(s, "\t", "    ") // Replace tabs with 4 spaces
+	s = strings.ReplaceAll(s, "\"", "'")
+	return s
 }
-
 func writeStringField(b *strings.Builder, key, value string) {
 	if strings.TrimSpace(value) == "" {
 		fmt.Fprintf(b, "%s: \"\"\n", key)
