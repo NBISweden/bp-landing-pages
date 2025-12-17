@@ -91,7 +91,7 @@ func downloadImageToFolder(downloader *manager.Downloader, targetDirectory, buck
 
 	parts := strings.Split(key, "/")
 	if len(parts) < 2 {
-		log.Fatalf("invalid key structure: %s", key)
+		log.Errorf("invalid key structure: %s", key)
 	}
 
 	rootFolderName := parts[1] // This gets the folder name after "datasets/"
@@ -111,14 +111,14 @@ func downloadImageToFolder(downloader *manager.Downloader, targetDirectory, buck
 	// Set up the local file
 	fd, err := os.Create(file)
 	if err != nil {
-		log.Fatalf("error while creating image file: %w", err)
+		log.Errorf("error while creating image file: %v", err)
 	}
 	defer fd.Close()
 
 	// Download the file
 	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
 	if err != nil {
-		log.Fatalf("failed to download image file: %w", err)
+		log.Fatalf("failed to download image file: %v", err)
 	}
 
 	log.Infof("Downloaded image to: %s", file)
