@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type LandingPageSet struct {
@@ -171,7 +173,7 @@ func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 	if len(lp.SampleImageFiles.Files) > 0 {
 		b.WriteString("sample_images:\n")
 		for _, f := range lp.SampleImageFiles.Files {
-			b.WriteString("  - filename: \"" + "/" + "img" + "/" + fileNameWithoutExt + "/" + strings.TrimPrefix(f.Filename, "LANDING_PAGE/THUMBNAILS/") + "\"\n")
+			b.WriteString("  - filename: \"" + "/" + "img" + "/" + fileNameWithoutExt + "/" + strings.TrimSuffix(strings.TrimPrefix(f.Filename, "LANDING_PAGE/THUMBNAILS/"), ".c4gh") + "\"\n")
 			b.WriteString("    filetype: \"" + f.Filetype + "\"\n")
 			if f.Checksum != "" {
 				b.WriteString("    checksum: \"" + f.Checksum + "\"\n")
@@ -186,22 +188,14 @@ func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 	return b.String()
 }
 
-func markdownWriter(xmlContent []byte, fileNameWithoutExt string) (string, string, error) {
+func markdownWriter(xmlContent []byte, fileNameWithoutExt string) (string, error) {
 
 	var set LandingPageSet
 	if err := xml.Unmarshal(xmlContent, &set); err != nil {
-		return "", "", err
+		log.Errorf("Error while unmarshallaing %d", err)
 	}
 
 	front := toFrontMatter(set.Pages[0], fileNameWithoutExt)
 
-	// Get description for body
-	body := ""
-	if desc := set.Pages[0].Attributes.GetString("dataset_description"); desc != "" {
-		body = desc + "\n"
-	} else {
-		body = "No dataset description.\n"
-	}
-
-	return front, body, nil
+	return front, nil
 }

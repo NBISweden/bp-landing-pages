@@ -43,7 +43,7 @@ func markDownCreator() {
 		if err != nil {
 			log.Fatalf("Error reading the XML file %V", err)
 		}
-		front, body, err := markdownWriter(xmlContent, fileNameWithoutExt)
+		front, err := markdownWriter(xmlContent, fileNameWithoutExt)
 		if err != nil {
 			log.Fatal("Error while getting header value from XML file", err)
 		}
@@ -60,7 +60,7 @@ func markDownCreator() {
 		defer mdFile.Close()
 
 		// Write Markdown content to the file
-		_, err = mdFile.WriteString((front + body))
+		_, err = mdFile.WriteString((front))
 		if err != nil {
 			log.Fatal("Error writing to Markdown file %V", mdFileName, err)
 			return nil
