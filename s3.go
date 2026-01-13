@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"net/http"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -24,20 +24,24 @@ type DeploymentBackend struct {
 func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion("auto"),
-		config.WithHTTPClient(&http.Client{Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}}),
+		config.WithRegion("us-east-1"),
+		config.WithHTTPClient(&http.Client{Transport: &http.Transport{}}),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(mConf.AccessKey, mConf.SecretKey, "")),
-		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
-			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-				return aws.Endpoint{URL: mConf.URL}, nil
-			})),
 	)
 
 	if err != nil {
 		log.Fatalf("Error while setting up s3 config: %v\n ", err)
 	}
-	client := s3.NewFromConfig(cfg)
+	client := s3.NewFromConfig(cfg,
+
+		func(o *s3.Options) {
+			o.BaseEndpoint = aws.String(mConf.URL)
+			o.EndpointOptions.DisableHTTPS = strings.HasPrefix(mConf.URL, "http:")
+			o.Region = "us-west-1"
+			o.UsePathStyle = true
+			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
+			o.ResponseChecksumValidation = aws.ResponseChecksumValidationWhenRequired
+		})
 	metadata_client := &MetadataBackend{
 
 		Client: client,
@@ -68,20 +72,22 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 func connectDeployments3(dConf DeployS3Config) *DeploymentBackend {
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion("auto"),
-		config.WithHTTPClient(&http.Client{Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}}),
+		config.WithRegion("us-east-1"),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(dConf.AccessKey, dConf.SecretKey, "")),
-		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
-			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-				return aws.Endpoint{URL: dConf.URL}, nil
-			})),
 	)
 
 	if err != nil {
 		log.Fatalf("Error while setting up s3 config: %v\n ", err)
 	}
-	client := s3.NewFromConfig(cfg)
+	client := s3.NewFromConfig(cfg,
+		func(o *s3.Options) {
+			o.BaseEndpoint = aws.String(dConf.URL)
+			o.EndpointOptions.DisableHTTPS = strings.HasPrefix(dConf.URL, "http:")
+			o.Region = "us-east-1"
+			o.UsePathStyle = true
+			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
+			o.ResponseChecksumValidation = aws.ResponseChecksumValidationWhenRequired
+		})
 	deployment_client := &DeploymentBackend{
 
 		Client: client,

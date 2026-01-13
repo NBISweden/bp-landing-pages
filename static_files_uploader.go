@@ -29,7 +29,6 @@ func staticSiteUploader(DeploymenClient *DeploymentBackend) {
 		close(walker)
 	}()
 
-	// For each file found walking, upload it to Amazon S3
 	for path := range walker {
 		rel, err := filepath.Rel(localPath, path)
 		if err != nil {

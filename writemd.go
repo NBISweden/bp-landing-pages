@@ -165,11 +165,6 @@ func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 	writeListField(&b, "comments", attrs.GetSet("comments"))
 	writeListField(&b, "allowed_uses", attrs.GetSet("allowed_uses"))
 
-	// Dataset ref
-	if lp.DatasetRef.Alias != "" {
-		writeStringField(&b, "dataset_ref", lp.DatasetRef.Alias)
-	}
-
 	// Sample images
 	if len(lp.SampleImageFiles.Files) > 0 {
 		b.WriteString("sample_images:\n")

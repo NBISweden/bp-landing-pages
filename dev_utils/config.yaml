@@ -3,7 +3,7 @@ S3MetadataBucket:
   accesskey: "myaccesskey"
   secretkey: "mysecretkey"
   region: "us-east-1"
-  bucket: "test/"
+  bucket: "test"
   WebMetadataFolder: "web/content/"
   
 S3DeploymentBucket:
@@ -11,5 +11,5 @@ S3DeploymentBucket:
   accesskey: "myaccesskey"
   secretkey: "mysecretkey"
   region: "us-east-1"
-  bucket: "deploy/"
+  bucket: "deploy"
 
