@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"path"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -169,7 +170,14 @@ func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 	if len(lp.SampleImageFiles.Files) > 0 {
 		b.WriteString("sample_images:\n")
 		for _, f := range lp.SampleImageFiles.Files {
-			b.WriteString("  - filename: \"" + "/" + "img" + "/" + fileNameWithoutExt + "/" + strings.TrimSuffix(strings.TrimPrefix(f.Filename, "LANDING_PAGE/THUMBNAILS/"), ".c4gh") + "\"\n")
+			cleanName := strings.TrimPrefix(f.Filename, "LANDING_PAGE/THUMBNAILS/")
+			cleanName = strings.TrimPrefix(cleanName, "LANDING_PAGE/")
+			cleanName = strings.TrimSuffix(cleanName, ".c4gh")
+
+			finalPath := path.Join("/img", fileNameWithoutExt, cleanName)
+
+			b.WriteString(fmt.Sprintf("  - filename: %q\n", finalPath))
+
 			b.WriteString("    filetype: \"" + f.Filetype + "\"\n")
 			if f.Checksum != "" {
 				b.WriteString("    checksum: \"" + f.Checksum + "\"\n")

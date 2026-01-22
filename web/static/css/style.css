@@ -141,11 +141,13 @@ th{
   max-width: 200px;
   font-weight:600;color:#333
 }
- .dataset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:24px}
-  .dataset-card{background:#fff;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;color:inherit;display:block}
-  .dataset-card:hover{transform:translateY(-4px);box-shadow:0 4px 16px rgba(0,0,0,0.12)}
-  .card-thumb{width:100px;height:100px;object-fit:cover;background:#f0f0f0;border-bottom:1px solid #e0e0e0}
-  .card-body{padding:20px}
+ .dataset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:20px}
+  .card-thumb{width:800px;width:100%;height:150px;}
+  .card-body{max-height:400px;padding:0px; background:#fff;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;color:inherit;display:block }
+  .img-thumb{height: 100%;  width: 100%;object-fit: cover;}
+  .dataset-card-details{padding: 15px;}
+  
+  
   .card-title{font-size:1.3rem;font-weight:600;margin:0 0 8px 0;color:#ff447c}
   .card-short-name{font-size:0.85rem;color:#888;margin-bottom:12px}
   .card-description{color:#555;font-size:0.95rem;line-height:1.5;margin-bottom:16px}
