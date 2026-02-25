@@ -45,7 +45,6 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 					log.Fatal("Error while downloading metadata files from metadata bucket", err)
 				}
 			}
-
 			// Handle image files (jpg, png, jpeg, gif, etc.)
 			ext := strings.ToLower(filepath.Ext(key))
 			if ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" {
@@ -53,6 +52,7 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 				if err != nil {
 					log.Fatal("Error while downloading image files from metadata bucket", err)
 				}
+
 			}
 		}
 	}

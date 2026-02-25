@@ -7,7 +7,6 @@
     <strong>Year:</strong> {{ .Params.year_of_submission }}<br/>
   </div>
 </header>
-
 <div class="grid">
    <div>
     <div class="panel">
@@ -207,6 +206,10 @@
       {{ end }}  
       </ul>
 
+       </div>
+       <div>
+        <h3>Application</h3>
+        <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName }}"><button>Apply for access</button></a>
        </div>
     </div>
  </aside>

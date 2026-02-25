@@ -133,7 +133,7 @@ html body {
  }
 
 
- dl{display:grid;grid-template-columns:200px 1fr;gap:10px 16px;margin:0}
+ dl{displhttp://localhost:42433/ay:grid;grid-template-columns:200px 1fr;gap:10px 16px;margin:0}
   dt{font-weight:600;color:#333}
   dd{margin:0;color:#555}
 th{
@@ -141,12 +141,14 @@ th{
   max-width: 200px;
   font-weight:600;color:#333
 }
- .dataset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:24px}
-  .dataset-card{background:#fff;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;color:inherit;display:block}
-  .dataset-card:hover{transform:translateY(-4px);box-shadow:0 4px 16px rgba(0,0,0,0.12)}
-  .card-thumb{width:100px;height:100px;object-fit:cover;background:#f0f0f0;border-bottom:1px solid #e0e0e0}
-  .card-body{padding:20px}
-  .card-title{font-size:1.3rem;font-weight:600;margin:0 0 8px 0;color:#ff447c}
+ .dataset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+  .card-thumb{width:800px;width:100%;height:150px;}
+  .card-body{width: 310px; height:350px;padding:0px; background:#fff;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:transform 0.2s,box-shadow 0.2s;text-decoration:none;color:inherit;display:block }
+  .img-thumb{height: 100%;  width: 100%;object-fit: cover;}
+  .dataset-card-details{padding: 15px;}
+  
+  
+  .card-title{font-size:16px;font-weight:600;margin:0 0 8px 0;color:#ff447c}
   .card-short-name{font-size:0.85rem;color:#888;margin-bottom:12px}
   .card-description{color:#555;font-size:0.95rem;line-height:1.5;margin-bottom:16px}
   .card-stats{display:flex;gap:16px;margin-bottom:12px;font-size:0.9rem}
@@ -176,6 +178,21 @@ h1{margin:0 0 8px 0;font-size:1.8rem;color:#ff447c}
  font-size: 100px;
 }
 
+.panel button{
+  background-color: #ff447c;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+  background-color: #e63d70; /* slightly darker */
+  transform: translateY(-2px);
+}
 
 .dataset-example-images {
   padding-left: 0;
