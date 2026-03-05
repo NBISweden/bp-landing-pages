@@ -1,7 +1,6 @@
 {{ define "main" }}
 <div>
   <div data-pagefind-ignore="all" class="container">
-    
     <script>
       window.addEventListener('DOMContentLoaded', (event) => {
         new PagefindUI({ element: "#search", showSubResults: true });
@@ -13,11 +12,11 @@
       <div id="search" style="overflow-x: auto;"></div>
     </div>
 
-    <h2 style="margin-top: 5rem;">Explore Bigpicture datasets</h2>
+    <h2 class="datasets-section-title">Explore Bigpicture datasets</h2>
     
     <div class="dataset-grid">
       {{ range where .Site.RegularPages "Section" "datasets" }}
-        <a href="{{ .RelPermalink }}" class="dataset-card-link" style="text-decoration: none;">
+        <a href="{{ .RelPermalink }}" class="dataset-card-link">
           <div class="card-body">
             
             <div class="card-thumb">   
