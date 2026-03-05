@@ -1,6 +1,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {{ $metaDescription := "" }}
+        {{ if .Description }}
+            {{ $metaDescription = .Description }}
+        {{ else if .Params.dataset_description }}
+            {{ $metaDescription = .Params.dataset_description }}
+        {{ else if .Summary }}
+            {{ $metaDescription = .Summary | plainify }}
+        {{ else if .Site.Params.slogan }}
+            {{ $metaDescription = .Site.Params.slogan }}
+        {{ else }}
+            {{ $metaDescription = .Site.Title }}
+        {{ end }}
+        {{ $metaDescription = $metaDescription | plainify | truncate 160 }}
     
     {{ if .Params.title }}
     <meta name="title" content="{{ .Params.title }}" />
@@ -14,6 +28,9 @@
 
     
     <meta name="keyword"  content="{{ .Site.Params.keyword }}">
+    <meta name="description" content="{{ $metaDescription }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="twitter:description" content="{{ $metaDescription }}">
     <link rel="shortcut icon" href="{{ "img/favicon.ico" | relURL }}">
 
     <title data-pagefind-meta="title" >{{ if .Title }}{{ .Title }} | {{ .Site.Params.SEOTitle }}{{ else }}{{ .Site.Params.SEOTitle }}{{ end }}</title>
@@ -21,10 +38,6 @@
     <link rel="canonical" href="{{ .RelPermalink }}">
 
     <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
-
-    <!-- Custom Fonts -->
-    <link href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.15.1/css/all.css" rel="stylesheet" type="text/css">
-
 
     <!-- Custom JS -->
     {{ range .Site.Params.custom_js }}
