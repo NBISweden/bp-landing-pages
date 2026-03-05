@@ -33,6 +33,7 @@
 <div>
   <div data-pagefind-ignore="all" class="container">
     {{ partial "datasets/search_script.html" . }}
+    {{ partial "datasets/pagination_script.html" . }}
     {{ partial "datasets/search.html" . }}
 
     <h2 class="datasets-section-title">Explore Bigpicture datasets</h2>
@@ -148,6 +149,7 @@
           <div class="card-body">
             
             <div class="card-thumb">   
+          
               {{ with index .Params.sample_images 0 }}
                 <img class="img-thumb" src="{{ .filename }}" alt="">
               {{ end }}
@@ -173,6 +175,7 @@
             </div> </div>
         </a> {{ end }}
         </div>
+        {{ partial "datasets/pagination.html" . }}
       </div>
     </div>
     

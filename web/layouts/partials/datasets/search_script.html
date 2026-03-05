@@ -58,6 +58,10 @@
       });
 
       if (resultsCounter) {
+        resultsCounter.dataset.matchingCount = String(visibleCount);
+        resultsCounter.dataset.totalCount = String(cards.length);
+        resultsCounter.dataset.activeFiltersCount = String(activeFiltersCount);
+        resultsCounter.dataset.searchActive = query ? 'true' : 'false';
         const activeQueryText = query ? ' • search active' : '';
         resultsCounter.textContent = `Showing ${visibleCount} of ${cards.length} datasets${activeFiltersCount > 0 ? ` • ${activeFiltersCount} active filter${activeFiltersCount > 1 ? 's' : ''}` : ''}${activeQueryText}`;
       }
