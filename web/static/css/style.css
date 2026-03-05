@@ -215,6 +215,202 @@ html body {
   margin-top: 5rem;
 }
 
+.dataset-search-shell {
+  background: #fff;
+  border: 1px solid #e0e7f5;
+  border-radius: 0.85rem;
+  padding: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.dataset-search-head h2 {
+  margin: 0;
+}
+
+.dataset-search-head p {
+  margin: 0.35rem 0 0.75rem 0;
+  color: #5c6774;
+  font-size: 0.92rem;
+}
+
+.dataset-search-ui-wrap {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.dataset-search-input {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 0.65rem;
+  border: 1px solid #dce6f0;
+  padding: 0 0.8rem;
+  font-size: 0.95rem;
+  color: #344050;
+  background: #fff;
+}
+
+.dataset-search-input:focus {
+  outline: none;
+  border-color: #6174d0;
+  box-shadow: 0 0 0 3px rgba(97, 116, 208, 0.16);
+}
+
+.dataset-search-clear {
+  border: 1px solid #dce6f0;
+  background: #f6f9fd;
+  color: #2f3f96;
+  border-radius: 0.65rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 0 0.9rem;
+  cursor: pointer;
+}
+
+.datasets-explorer {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.dataset-filters-panel {
+  position: sticky;
+  top: 84px;
+  background: #fff;
+  border: 1px solid #e0e7f5;
+  border-radius: 0.75rem;
+  padding: 0.9rem;
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+}
+
+.dataset-filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.dataset-filters-head h3 {
+  margin: 0;
+  color: #2f3f96;
+  font-size: 1rem;
+}
+
+#clear-dataset-filters {
+  border: 1px solid #dce6f0;
+  background: #f6f9fd;
+  color: #2f3f96;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.dataset-filter-group {
+  margin-bottom: 0.9rem;
+  border: 1px solid #e5edf7;
+  border-radius: 0.55rem;
+  background-color: #fcfdff;
+}
+
+.dataset-filter-group summary {
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.9rem;
+  color: #3f4fb0;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.dataset-filter-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.dataset-filter-group summary::after {
+  content: '+';
+  float: right;
+  font-size: 1rem;
+  line-height: 1;
+  color: #6174d0;
+}
+
+.dataset-filter-group[open] summary::after {
+  content: '−';
+}
+
+.dataset-filter-options {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0 0.65rem 0.65rem 0.65rem;
+}
+
+.dataset-filter-options label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #495363;
+  line-height: 1.3;
+}
+
+.dataset-filter-options input[type="checkbox"] {
+  margin-top: 0.1rem;
+}
+
+.dataset-filter-options .filter-option-hidden {
+  display: none;
+}
+
+.dataset-filter-options.filter-options-expanded .filter-option-hidden {
+  display: flex;
+}
+
+.filter-options-toggle {
+  border: 0;
+  background: transparent;
+  color: #2f3f96;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0;
+  margin-top: 0.25rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dataset-results-count {
+  margin: 0 0 0.75rem 0;
+  color: #4f5a66;
+  font-size: 0.92rem;
+}
+
+.dataset-empty-state {
+  border: 1px solid #e0e7f5;
+  background: #f9fbff;
+  border-radius: 0.7rem;
+  padding: 0.8rem;
+  margin-bottom: 0.85rem;
+}
+
+.dataset-empty-state p {
+  margin: 0 0 0.5rem 0;
+  color: #42506a;
+  font-size: 0.9rem;
+}
+
+#reset-empty-state {
+  border: 1px solid #dce6f0;
+  background: #fff;
+  color: #2f3f96;
+  border-radius: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+
 .dataset-card-link {
   text-decoration: none;
 }
@@ -453,8 +649,31 @@ h1{margin:0 0 8px 0;font-size:1.8rem;color:#3f4fb0}
 }
 
 @media screen and (max-width: 42em) {
+  .dataset-search-shell {
+    padding: 0.85rem;
+  }
+
+  .dataset-search-head p {
+    font-size: 0.88rem;
+  }
+
+  .dataset-search-ui-wrap {
+    display: grid;
+    grid-template-columns: 1fr auto;
+  }
+
   .datasets-section-title {
     margin-top: 3rem;
+  }
+
+  .datasets-explorer {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  .dataset-filters-panel {
+    position: static;
+    max-height: none;
   }
 
   .dataset-grid {
