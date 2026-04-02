@@ -1,0 +1,158 @@
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const cards = Array.from(document.querySelectorAll('.dataset-card-link'));
+    const checkboxes = Array.from(document.querySelectorAll('.dataset-filter-checkbox'));
+    const clearBtn = document.getElementById('clear-dataset-filters');
+    const searchInput = document.getElementById('dataset-search-input');
+    const clearSearchBtn = document.getElementById('clear-dataset-search');
+    const resultsCounter = document.getElementById('dataset-results-count');
+    const emptyState = document.getElementById('dataset-empty-state');
+    const resetEmptyStateBtn = document.getElementById('reset-empty-state');
+    const filterOptionGroups = Array.from(document.querySelectorAll('.dataset-filter-options'));
+
+    const normalize = (value) => (value || '').toString().toLowerCase().trim();
+
+    const getValues = (card, key) => {
+      const raw = card.dataset[key] || '';
+      if (!raw) return [];
+      return raw.split('|').filter(Boolean);
+    };
+
+    const applyFilters = () => {
+      const selected = {
+        keywords: new Set(),
+        stainings: new Set(),
+        imageTypes: new Set(),
+        accessTypes: new Set(),
+      };
+
+      let activeFiltersCount = 0;
+      const query = normalize(searchInput && searchInput.value);
+      const queryTerms = query ? query.split(/\s+/).filter(Boolean) : [];
+
+      checkboxes.forEach((cb) => {
+        if (!cb.checked) return;
+        const group = cb.dataset.filterGroup;
+        selected[group].add(cb.value);
+        activeFiltersCount += 1;
+      });
+
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const keywords = getValues(card, 'keywords');
+        const stainings = getValues(card, 'stainings');
+        const imageTypes = getValues(card, 'imageTypes');
+        const accessTypes = getValues(card, 'accessTypes');
+        const searchableText = normalize(card.dataset.searchText);
+
+        const matchesKeywords = selected.keywords.size === 0 || keywords.some((v) => selected.keywords.has(v));
+        const matchesStainings = selected.stainings.size === 0 || stainings.some((v) => selected.stainings.has(v));
+        const matchesImageTypes = selected.imageTypes.size === 0 || imageTypes.some((v) => selected.imageTypes.has(v));
+        const matchesAccessTypes = selected.accessTypes.size === 0 || accessTypes.some((v) => selected.accessTypes.has(v));
+        const matchesQuery = queryTerms.length === 0 || queryTerms.every((term) => searchableText.includes(term));
+
+        const visible = matchesKeywords && matchesStainings && matchesImageTypes && matchesAccessTypes && matchesQuery;
+        card.style.display = visible ? '' : 'none';
+        if (visible) visibleCount += 1;
+      });
+
+      if (resultsCounter) {
+        resultsCounter.dataset.matchingCount = String(visibleCount);
+        resultsCounter.dataset.totalCount = String(cards.length);
+        resultsCounter.dataset.activeFiltersCount = String(activeFiltersCount);
+        resultsCounter.dataset.searchActive = query ? 'true' : 'false';
+        const activeQueryText = query ? ' • search active' : '';
+        resultsCounter.textContent = `Showing ${visibleCount} of ${cards.length} datasets${activeFiltersCount > 0 ? ` • ${activeFiltersCount} active filter${activeFiltersCount > 1 ? 's' : ''}` : ''}${activeQueryText}`;
+      }
+
+      if (emptyState) {
+        emptyState.hidden = visibleCount !== 0;
+      }
+    };
+
+    const clearSearchQuery = () => {
+      if (!searchInput) return;
+      searchInput.value = '';
+    };
+
+    const focusSearch = () => {
+      if (!searchInput) return;
+      searchInput.focus();
+      searchInput.select();
+    };
+
+    document.addEventListener('keydown', (keyboardEvent) => {
+      if (keyboardEvent.key !== '/') return;
+      const targetTagName = keyboardEvent.target && keyboardEvent.target.tagName ? keyboardEvent.target.tagName.toLowerCase() : '';
+      if (targetTagName === 'input' || targetTagName === 'textarea') return;
+      keyboardEvent.preventDefault();
+      focusSearch();
+    });
+
+    const setupCollapsibleOptions = () => {
+      const visibleLimit = 8;
+
+      filterOptionGroups.forEach((group) => {
+        const options = Array.from(group.querySelectorAll('label'));
+        if (options.length <= visibleLimit) return;
+
+        options.forEach((option, index) => {
+          option.classList.toggle('filter-option-hidden', index >= visibleLimit);
+        });
+
+        const toggleButton = document.createElement('button');
+        toggleButton.type = 'button';
+        toggleButton.className = 'filter-options-toggle';
+        toggleButton.textContent = 'Show more';
+        toggleButton.setAttribute('aria-expanded', 'false');
+
+        toggleButton.addEventListener('click', () => {
+          const expanded = toggleButton.getAttribute('aria-expanded') === 'true';
+          toggleButton.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          toggleButton.textContent = expanded ? 'Show more' : 'Show less';
+          group.classList.toggle('filter-options-expanded', !expanded);
+        });
+
+        group.appendChild(toggleButton);
+      });
+    };
+
+    checkboxes.forEach((cb) => cb.addEventListener('change', applyFilters));
+    if (searchInput) {
+      searchInput.addEventListener('input', applyFilters);
+    }
+
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', () => {
+        clearSearchQuery();
+        focusSearch();
+        applyFilters();
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        checkboxes.forEach((cb) => {
+          cb.checked = false;
+        });
+        clearSearchQuery();
+        applyFilters();
+      });
+    }
+
+    if (resetEmptyStateBtn) {
+      resetEmptyStateBtn.addEventListener('click', () => {
+        checkboxes.forEach((cb) => {
+          cb.checked = false;
+        });
+        clearSearchQuery();
+        applyFilters();
+        focusSearch();
+      });
+    }
+
+    setupCollapsibleOptions();
+    applyFilters();
+  });
+</script>

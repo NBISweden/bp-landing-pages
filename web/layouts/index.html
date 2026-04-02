@@ -1,26 +1,155 @@
 {{ define "main" }}
+{{ $datasets := where .Site.RegularPages "Section" "datasets" }}
+{{ $keywordOptions := slice }}
+{{ $stainingOptions := slice }}
+{{ $imageTypeOptions := slice }}
+{{ $accessTypeOptions := slice }}
+{{ range $datasets }}
+  {{ with .Params.keywords }}
+    {{ range . }}
+      {{ $keywordOptions = $keywordOptions | append . }}
+    {{ end }}
+  {{ end }}
+  {{ with .Params.stainings }}
+    {{ range . }}
+      {{ $stainingOptions = $stainingOptions | append . }}
+    {{ end }}
+  {{ end }}
+  {{ with .Params.image_types }}
+    {{ range . }}
+      {{ $imageTypeOptions = $imageTypeOptions | append . }}
+    {{ end }}
+  {{ end }}
+  {{ with .Params.type_of_access }}
+    {{ $accessTypeOptions = $accessTypeOptions | append . }}
+  {{ end }}
+{{ end }}
+
+{{ $keywordOptions = $keywordOptions | uniq | sort }}
+{{ $stainingOptions = $stainingOptions | uniq | sort }}
+{{ $imageTypeOptions = $imageTypeOptions | uniq | sort }}
+{{ $accessTypeOptions = $accessTypeOptions | uniq | sort }}
+
 <div>
   <div data-pagefind-ignore="all" class="container">
-    
-    <script>
-      window.addEventListener('DOMContentLoaded', (event) => {
-        new PagefindUI({ element: "#search", showSubResults: true });
-      });
-    </script>
-    
-    <h2>Bigpicture Dataset search</h2>
-    <div style="max-height: 1%;">
-      <div id="search" style="overflow-x: auto;"></div>
-    </div>
+    {{ partial "datasets/search_script.html" . }}
+    {{ partial "datasets/pagination_script.html" . }}
+    {{ partial "datasets/search.html" . }}
 
-    <h2 style="margin-top: 5rem;">Explore Bigpicture datasets</h2>
-    
-    <div class="dataset-grid">
-      {{ range where .Site.RegularPages "Section" "datasets" }}
-        <a href="{{ .RelPermalink }}" class="dataset-card-link" style="text-decoration: none;">
+    <h2 class="datasets-section-title">Explore Bigpicture datasets</h2>
+
+    <div class="datasets-explorer">
+      <aside class="dataset-filters-panel">
+        <div class="dataset-filters-head">
+          <h3>Filters</h3>
+          <button type="button" id="clear-dataset-filters">Clear all</button>
+        </div>
+
+        <details class="dataset-filter-group" open>
+          <summary>Keywords</summary>
+          <div class="dataset-filter-options">
+            {{ range $keywordOptions }}
+              <label><input type="checkbox" class="dataset-filter-checkbox" data-filter-group="keywords" value="{{ lower . }}"> {{ . }}</label>
+            {{ end }}
+          </div>
+        </details>
+
+        <details class="dataset-filter-group" open>
+          <summary>Stainings</summary>
+          <div class="dataset-filter-options">
+            {{ range $stainingOptions }}
+              <label><input type="checkbox" class="dataset-filter-checkbox" data-filter-group="stainings" value="{{ lower . }}"> {{ . }}</label>
+            {{ end }}
+          </div>
+        </details>
+
+        <details class="dataset-filter-group" open>
+          <summary>Image Type</summary>
+          <div class="dataset-filter-options">
+            {{ range $imageTypeOptions }}
+              <label><input type="checkbox" class="dataset-filter-checkbox" data-filter-group="imageTypes" value="{{ lower . }}"> {{ . }}</label>
+            {{ end }}
+          </div>
+        </details>
+
+        <details class="dataset-filter-group" open>
+          <summary>Access Type</summary>
+          <div class="dataset-filter-options">
+            {{ range $accessTypeOptions }}
+              <label><input type="checkbox" class="dataset-filter-checkbox" data-filter-group="accessTypes" value="{{ lower . }}"> {{ . }}</label>
+            {{ end }}
+          </div>
+        </details>
+      </aside>
+
+      <div>
+        <p id="dataset-results-count" class="dataset-results-count"></p>
+        <div id="dataset-empty-state" class="dataset-empty-state" hidden>
+          <p>No datasets match the selected filters.</p>
+          <button type="button" id="reset-empty-state">Clear filters and search</button>
+        </div>
+        <div class="dataset-grid">
+      {{ range $datasets }}
+        {{ $cardKeywords := slice }}
+        {{ with .Params.keywords }}
+          {{ range . }}
+            {{ $cardKeywords = $cardKeywords | append (lower .) }}
+          {{ end }}
+        {{ end }}
+
+        {{ $cardStainings := slice }}
+        {{ with .Params.stainings }}
+          {{ range . }}
+            {{ $cardStainings = $cardStainings | append (lower .) }}
+          {{ end }}
+        {{ end }}
+
+        {{ $cardImageTypes := slice }}
+        {{ with .Params.image_types }}
+          {{ range . }}
+            {{ $cardImageTypes = $cardImageTypes | append (lower .) }}
+          {{ end }}
+        {{ end }}
+
+        {{ $cardAccessTypes := slice }}
+        {{ with .Params.type_of_access }}
+          {{ $cardAccessTypes = $cardAccessTypes | append (lower .) }}
+        {{ end }}
+
+        {{ $searchValues := slice }}
+        {{ with .Params.dataset_title }}
+          {{ $searchValues = $searchValues | append (lower .) }}
+        {{ end }}
+        {{ with .Params.dataset_description }}
+          {{ $searchValues = $searchValues | append (lower .) }}
+        {{ end }}
+        {{ with .Params.doi }}
+          {{ $searchValues = $searchValues | append (lower .) }}
+        {{ end }}
+        {{ with .Params.keywords }}
+          {{ range . }}
+            {{ $searchValues = $searchValues | append (lower .) }}
+          {{ end }}
+        {{ end }}
+        {{ with .Params.stainings }}
+          {{ range . }}
+            {{ $searchValues = $searchValues | append (lower .) }}
+          {{ end }}
+        {{ end }}
+        {{ with .Params.image_types }}
+          {{ range . }}
+            {{ $searchValues = $searchValues | append (lower .) }}
+          {{ end }}
+        {{ end }}
+        {{ with .Params.type_of_access }}
+          {{ $searchValues = $searchValues | append (lower .) }}
+        {{ end }}
+
+        <a href="{{ .RelPermalink }}" class="dataset-card-link" data-keywords="{{ delimit $cardKeywords "|" }}" data-stainings="{{ delimit $cardStainings "|" }}" data-image-types="{{ delimit $cardImageTypes "|" }}" data-access-types="{{ delimit $cardAccessTypes "|" }}" data-search-text="{{ delimit $searchValues " | " }}">
           <div class="card-body">
             
             <div class="card-thumb">   
+          
               {{ with index .Params.sample_images 0 }}
                 <img class="img-thumb" src="{{ .filename }}" alt="">
               {{ end }}
@@ -45,6 +174,9 @@
               
             </div> </div>
         </a> {{ end }}
+        </div>
+        {{ partial "datasets/pagination.html" . }}
+      </div>
     </div>
     
   </div> </div>

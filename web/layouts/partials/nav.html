@@ -1,17 +1,48 @@
+<nav class="topnav" id="navbar" aria-label="Main navigation" data-pagefind-ignore="all">
+  <a class="logo-nav-container" href="{{ .Site.BaseURL }}/" aria-label="Bigpicture home">
+    <img id="nav-logo" src="{{ .Site.BaseURL }}/img/bigpicture_logo.svg" alt="Bigpicture logo">
+  </a>
+
+  <button
+    class="nav-toggle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="site-nav-links"
+    aria-label="Toggle navigation"
+  >
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+  </button>
+
+  <div class="nav-links" id="site-nav-links">
+    <a href="{{ .Site.BaseURL }}/">Home</a>
+  </div>
+</nav>
+
+<script>
+  (function () {
+    var nav = document.getElementById('navbar');
+    if (!nav) return;
+    var toggle = nav.querySelector('.nav-toggle');
+    function updateNavOnScroll() {
+      if (window.scrollY > 24) {
+        nav.classList.add('nav-scrolled');
+      } else {
+        nav.classList.remove('nav-scrolled');
+      }
+    }
+
+    updateNavOnScroll();
+    window.addEventListener('scroll', updateNavOnScroll, { passive: true });
+
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        var isOpen = nav.classList.toggle('nav-open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
+  })();
+</script>
 
 
-<div class="topnav" id="navbar">
-    
-  
-
-<div class="logo-nav-container">
-<img id = "nav-logo" src="{{.Site.BaseURL}}/img/bigpicture_logo.svg"> 
-</div>     
-<div class="nav-links">
-            <a href="{{.Site.BaseURL}}/">Home</a>
-            <a href="{{.Site.BaseURL}}/datasets.html">Datasets</a>
-          </div>
-          </div>
-      
-    
-      
