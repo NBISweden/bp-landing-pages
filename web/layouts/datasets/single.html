@@ -1,16 +1,9 @@
 {{ define "main" }}
 <div>
- <header>
-  <div class="meta">
-    <h1>{{ .Params.dataset_title }}</h1>
-    <strong>Doi:</strong> {{ .Params.doi }}<br/>
-    <strong>Year:</strong> {{ .Params.year_of_submission }}<br/>
-  </div>
-</header>
 <div class="grid">
    <div>
     <div class="panel">
-      <h3>Description</h3>
+      <h1>{{ .Params.dataset_title }}</h1>
       <p>{{ .Params.dataset_description }}</p>
     </div>
    <div class="panel">
@@ -87,8 +80,12 @@
     <tr>
       <th>Staining</th>
       <td>
-        {{ range .Params.stainings }}
-        <p>{{ . }}</p>
+        {{ $stainings := .Params.stainings | default (slice) }}
+        {{ range $index, $staining := $stainings }}
+        <p class="staining-item {{ if ge $index 5 }}staining-item-hidden{{ end }}">{{ $staining }}</p>
+        {{ end }}
+        {{ if gt (len $stainings) 5 }}
+        <span class="stainings-toggle-text" data-expanded="false" role="button" tabindex="0" onclick="toggleStainings(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleStainings(this);}">See more</span>
         {{ end }}
       </td>
     </tr>
@@ -197,6 +194,13 @@
     </div>
      <aside>
     <div class="panel">
+               <div class="meta">
+    <h3>Year</h3>
+    <strong>Doi:</strong> {{ .Params.doi }}<br/>
+    <strong>Year:</strong> {{ .Params.year_of_submission }}<br/>
+    <strong>Version:</strong> {{ .Params.dataset_version }}<br/>
+ 
+  </div>
       <h3>Sample Images</h3>
 
        <div>
@@ -207,6 +211,7 @@
       </ul>
 
        </div>
+       
        <div>
         <h3>Application</h3>
         <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName }}"><button>Apply for access</button></a>
@@ -219,8 +224,6 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.js"></script>
-<script>
-  const gallery = new Viewer(document.getElementById('dataset-example-images'), { url: "data-original" });
-</script>
+<script src="{{ "js/datasets-single.js" | relURL }}"></script>
 
 {{ end }}
