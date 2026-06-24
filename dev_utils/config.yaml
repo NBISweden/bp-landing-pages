@@ -5,11 +5,10 @@ S3MetadataBucket:
   region: "us-east-1"
   bucket: "test"
   WebMetadataFolder: "web/content/"
-  
+
 S3DeploymentBucket:
   url: "http://127.0.0.1:9000"
   accesskey: "myaccesskey"
   secretkey: "mysecretkey"
   region: "us-east-1"
   bucket: "deploy"
-

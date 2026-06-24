@@ -1,58 +1,58 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-    name: lp-generator-cronjob
-    namespace: {{ .Values.namespace }}
+  name: lp-generator-cronjob
+  namespace: { { .Values.namespace } }
 spec:
-    schedule: {{ .Values.schedule }}
-    concurrencyPolicy: Forbid
-    startingDeadlineSeconds: 3600
-    jobTemplate:
+  schedule: { { .Values.schedule } }
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 120
+      template:
         spec:
-            backoffLimit: 2
-            ttlSecondsAfterFinished: 120
-            template:
-                spec:
-                    securityContext:
-                      runAsUser: 1000 
-                      runAsGroup: 1000
-                      fsGroup: 1000
-                    volumes:
-                    - name: "tmp"
-                      emptyDir: 
-                        sizeLimit: "1Gi"
-                    - name: "cronjob"
-                      projected:
-                        defaultMode: 0400
-                        sources:
-                        - secret:
-                            name: "lp-generator-secret"
-                    containers:
-                    - name: lp-generator-container
-                      image: {{ .Values.images.lp_image }}
-                      imagePullPolicy: Always
-                      command: ["sh" , "-c", "cp /app -r /web /tmp && cd /tmp && /app"]
-                      env:
-                      - name: CONFIGFILE  
-                        value: "/.secrets/config.yaml"
-                      volumeMounts:
-                      - name: "tmp"
-                        mountPath: "/tmp"
-                      - name: "cronjob"
-                        mountPath: "/.secrets/config.yaml"
-                        subPath: "config.yaml"
-                      resources:
-                        requests: 
-                            cpu: "100m"
-                            memory: "128M"
-                        limits: 
-                            cpu: "100m"
-                            memory: "128M"
-                      securityContext:
-                        seccompProfile:
-                          type: RuntimeDefault
-                        capabilities:
-                          drop: ["ALL"]
-                        allowPrivilegeEscalation: false
-                        readOnlyRootFilesystem: true  
-                    restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+          volumes:
+            - name: "tmp"
+              emptyDir:
+                sizeLimit: "1Gi"
+            - name: "cronjob"
+              projected:
+                defaultMode: 0400
+                sources:
+                  - secret:
+                      name: "lp-generator-secret"
+          containers:
+            - name: lp-generator-container
+              image: { { .Values.images.lp_image } }
+              imagePullPolicy: Always
+              command: ["sh", "-c", "cp /app -r /web /tmp && cd /tmp && /app"]
+              env:
+                - name: CONFIGFILE
+                  value: "/.secrets/config.yaml"
+              volumeMounts:
+                - name: "tmp"
+                  mountPath: "/tmp"
+                - name: "cronjob"
+                  mountPath: "/.secrets/config.yaml"
+                  subPath: "config.yaml"
+              resources:
+                requests:
+                  cpu: "100m"
+                  memory: "128M"
+                limits:
+                  cpu: "100m"
+                  memory: "128M"
+              securityContext:
+                seccompProfile:
+                  type: RuntimeDefault
+                capabilities:
+                  drop: ["ALL"]
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+          restartPolicy: OnFailure

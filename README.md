@@ -1,6 +1,6 @@
 # Bigpicture-landing-pages-service
-Bigpicture project dataset landing page generator
 
+Bigpicture project dataset landing page generator
 
 ## Development environment
 
@@ -17,6 +17,7 @@ export CONFIGFILE="dev_utils/config.yaml"
 ```
 
 Start the application by running
+
 ```
 go run .
 ```
