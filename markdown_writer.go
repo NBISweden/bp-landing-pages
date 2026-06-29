@@ -19,15 +19,13 @@ func markDownCreator() {
 	markdownDir := "web/content/datasets/"
 
 	// Create the Markdown directory if it doesn't exist
-	if err := os.MkdirAll(markdownDir, 0755); err != nil {
-		if err != nil {
-			log.Fatal("Error creating directory:", err)
-			os.Exit(1)
-		}
+	err := os.MkdirAll(markdownDir, 0755)
+	if err != nil {
+		log.Error("Error creating dirs", err)
 	}
 
 	// Walk through the XML directory
-	err := filepath.Walk(xmlDirPath, func(xmlFilePath string, info os.FileInfo, err error) error {
+	err = filepath.Walk(xmlDirPath, func(xmlFilePath string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Fatal("Error accessing file", err)
 			return nil

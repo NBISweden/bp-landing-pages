@@ -52,9 +52,8 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 	})
 	if err != nil {
 		log.Fatalf("Error while connecting to the metadata bucket %v\n ", err)
-	} else {
-		log.Infoln("Connection established to metadata bucket", metadataClient.Bucket)
 	}
+	log.Infoln("Connection established to metadata bucket", metadataClient.Bucket)
 
 	// Abort if 0 metadata files found in bucket
 	numberOfFiles := 0

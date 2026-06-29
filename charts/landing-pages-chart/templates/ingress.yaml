@@ -14,12 +14,12 @@ metadata:
   name: my-ingress
   namespace: {{ .Values.namespace }}
 spec:
-  {{ if .Values.tls }}  
+  {{- if .Values.tls }}
   tls:
   - hosts:
     - "{{ .Values.domainName }}"
     secretName: {{ .Values.secretName }}
-{{  end  }}
+  {{- end }}
   rules:
   - host: {{ .Values.domainName }}
     http:
