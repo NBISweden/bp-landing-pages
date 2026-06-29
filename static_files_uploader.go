@@ -40,7 +40,7 @@ func staticSiteUploader(DeploymenClient *DeploymentBackend) {
 			continue
 		}
 		fileInfo, _ := file.Stat()
-		var fileSize int64 = fileInfo.Size()
+		var fileSize = fileInfo.Size()
 
 		buf := make([]byte, fileSize)
 		_, err = file.Read(buf)
