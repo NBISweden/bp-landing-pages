@@ -20,8 +20,10 @@ func markDownCreator() {
 
 	// Create the Markdown directory if it doesn't exist
 	if err := os.MkdirAll(markdownDir, 0755); err != nil {
-		log.Fatal("Error creating directory:", err)
-		os.Exit(1)
+		if err != nil {
+			log.Fatal("Error creating directory:", err)
+			os.Exit(1)
+		}
 	}
 
 	// Walk through the XML directory
