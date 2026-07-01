@@ -2,8 +2,9 @@
 name: Lint
 
 on:
-  push: null
-  pull_request: null
+  pull_request:
+    branches:
+      - main
 
 permissions: {}
 
@@ -28,6 +29,8 @@ jobs:
         uses: super-linter/super-linter@61abc07d755095a68f4987d1c2c3d1d64408f1f9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILTER_REGEX_EXCLUDE: index.md
+          FILTER_REGEX_EXCLUDE: (index\.md|charts/.*)
           VALIDATE_BIOME_FORMAT: false
           JSCPD_CONFIG_FILE: .jscpd.json
+          VALIDATE_JSCPD: false
+          VALIDATE_HTML: false

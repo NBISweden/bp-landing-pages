@@ -9,22 +9,25 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	log "github.com/sirupsen/logrus"
 )
 
-func metadataDownloader(Metadataclient *MetadataBackend) {
+func metadataDownloader(metadataclient *MetadataBackend) {
 
 	var (
-		Bucket         = Metadataclient.Bucket // Download from this bucket
+		Bucket         = metadataclient.Bucket // Download from this bucket
 		Prefix         = "datasets/"           // Using this key prefix
-		XmlDirectory   = "web/data/tmp/"       // Into this directory
+		XMLDirectory   = "web/data/tmp/"       // Into this directory
 		ImageDirectory = "web/static/img/"
 	)
-	client := Metadataclient.Client
+	client := metadataclient.Client
 
-	manager := manager.NewDownloader(client)
+	manager := transfermanager.New(client, func(o *transfermanager.Options) {
+		o.PartSizeBytes = 64 * 1024 * 1024
+		o.Concurrency = 3
+	})
 	paginator := s3.NewListObjectsV2Paginator(client, &s3.ListObjectsV2Input{
 		Bucket: &Bucket,
 		Prefix: &Prefix,
@@ -40,7 +43,7 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 
 			// Handle XML files
 			if filepath.Ext(key) == ".xml" {
-				err := downloadToFile(manager, XmlDirectory, Bucket, key)
+				err := downloadToFile(manager, XMLDirectory, Bucket, key)
 				if err != nil {
 					log.Fatal("Error while downloading metadata files from metadata bucket", err)
 				}
@@ -59,15 +62,15 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 	log.Infoln("Completed downloading metadata files")
 }
 
-func downloadToFile(downloader *manager.Downloader, targetDirectory, bucket, key string) error {
+func downloadToFile(manager *transfermanager.Client, targetDirectory, bucket, key string) error {
 	// Create the directories in the path
 	re := regexp.MustCompile("aa-Dataset-([a-z0-9]+)-([a-z0-9]+)")
 	matches := re.FindStringSubmatch(key)
 	if len(matches) == 0 {
 		log.Infof("could not extract dataset ID from key: %s", key)
 	}
-	DatasetId := matches[0]
-	fileStr := fmt.Sprintf("%s%s", DatasetId, ".xml")
+	DatasetID := matches[0]
+	fileStr := fmt.Sprintf("%s%s", DatasetID, ".xml")
 	file := filepath.Join(targetDirectory, fileStr)
 	if err := os.MkdirAll(filepath.Dir(file), 0775); err != nil {
 		return err
@@ -80,14 +83,11 @@ func downloadToFile(downloader *manager.Downloader, targetDirectory, bucket, key
 	}
 	defer fd.Close()
 
-	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
-	if err != nil {
-		log.Fatal("Failed to download metadatafiles", err)
-	}
+	_, err = manager.DownloadObject(context.TODO(), &transfermanager.DownloadObjectInput{Bucket: &bucket, Key: &key})
 	return err
 }
 
-func downloadImageToFolder(downloader *manager.Downloader, targetDirectory, bucket, key string) error {
+func downloadImageToFolder(downloader *transfermanager.Client, targetDirectory, bucket, key string) error {
 
 	parts := strings.Split(key, "/")
 	if len(parts) < 2 {
@@ -116,9 +116,9 @@ func downloadImageToFolder(downloader *manager.Downloader, targetDirectory, buck
 	defer fd.Close()
 
 	// Download the file
-	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
+	_, err = downloader.DownloadObject(context.TODO(), &transfermanager.DownloadObjectInput{Bucket: &bucket, Key: &key})
 	if err != nil {
-		log.Fatalf("failed to download image file: %v", err)
+		return err
 	}
 
 	log.Infof("Downloaded image to: %s", file)
