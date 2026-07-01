@@ -42,19 +42,18 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
 			o.ResponseChecksumValidation = aws.ResponseChecksumValidationWhenRequired
 		})
-	metadata_client := &MetadataBackend{
+	metadataClient := &MetadataBackend{
 
 		Client: client,
 		Bucket: mConf.Bucket,
 	}
-	resp, err := metadata_client.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
-		Bucket: aws.String(metadata_client.Bucket),
+	resp, err := metadataClient.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+		Bucket: aws.String(metadataClient.Bucket),
 	})
 	if err != nil {
 		log.Fatalf("Error while connecting to the metadata bucket %v\n ", err)
-	} else {
-		log.Infoln("Connection established to metadata bucket", metadata_client.Bucket)
 	}
+	log.Infoln("Connection established to metadata bucket", metadataClient.Bucket)
 
 	// Abort if 0 metadata files found in bucket
 	numberOfFiles := 0
@@ -66,7 +65,7 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 	if numberOfFiles == 0 {
 		log.Fatal("No Metadata files found in bucket. Length of files ", numberOfFiles)
 	}
-	return metadata_client
+	return metadataClient
 }
 
 func connectDeployments3(dConf DeployS3Config) *DeploymentBackend {
@@ -88,18 +87,17 @@ func connectDeployments3(dConf DeployS3Config) *DeploymentBackend {
 			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
 			o.ResponseChecksumValidation = aws.ResponseChecksumValidationWhenRequired
 		})
-	deployment_client := &DeploymentBackend{
+	deploymentClient := &DeploymentBackend{
 
 		Client: client,
 		Bucket: dConf.Bucket,
 	}
-	_, err = deployment_client.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
-		Bucket: aws.String(deployment_client.Bucket),
+	_, err = deploymentClient.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+		Bucket: aws.String(deploymentClient.Bucket),
 	})
 	if err != nil {
 		log.Fatalf("Error while connecting to the deplpyment bucket %v\n ", err)
-	} else {
-		log.Infoln("Connection established to deployment bucket", deployment_client.Bucket)
 	}
-	return deployment_client
+	log.Infoln("Connection established to deployment bucket", deploymentClient.Bucket)
+	return deploymentClient
 }

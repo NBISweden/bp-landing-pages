@@ -10,14 +10,13 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 )
 
-func staticSiteUploader(DeploymenClient *DeploymentBackend) {
+func staticSiteUploader(deploymenClient *DeploymentBackend) {
 	var (
 		localPath = "web/public/"
-		bucket    = DeploymenClient.Bucket
+		bucket    = deploymenClient.Bucket
 	)
 
 	walker := make(fileWalk)
@@ -39,8 +38,13 @@ func staticSiteUploader(DeploymenClient *DeploymentBackend) {
 			log.Println("Failed opening file", path, err)
 			continue
 		}
-		fileInfo, _ := file.Stat()
-		var fileSize int64 = fileInfo.Size()
+		fileInfo, err := file.Stat()
+		if err != nil {
+			log.Println("Failed to stat file", path, err)
+			file.Close()
+			continue
+		}
+		var fileSize = fileInfo.Size()
 
 		buf := make([]byte, fileSize)
 		_, err = file.Read(buf)
@@ -63,9 +67,12 @@ func staticSiteUploader(DeploymenClient *DeploymentBackend) {
 			log.Fatalln("File bytes empty", path, err)
 		}
 
-		client := DeploymenClient.Client
-		uploader := manager.NewUploader(client)
-		result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+		client := deploymenClient.Client
+		uploader := transfermanager.New(client, func(o *transfermanager.Options) {
+			o.PartSizeBytes = 64 * 1024 * 1024
+			o.Concurrency = 3
+		})
+		result, err := uploader.UploadObject(context.TODO(), &transfermanager.UploadObjectInput{
 			Bucket:      &bucket,
 			Key:         aws.String(rel),
 			Body:        bytes.NewReader(buf),

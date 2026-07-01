@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	s3manager "github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	log "github.com/sirupsen/logrus"
 )
@@ -56,19 +56,62 @@ type DownloadStats struct {
 	Failed           int
 }
 
-func metadataDownloader(Metadataclient *MetadataBackend) {
+const downloadTimeout = 60 * time.Second
+
+type datasetIDExtractor struct {
+	name    string
+	pattern *regexp.Regexp
+}
+
+var datasetIDExtractors = []datasetIDExtractor{
+	{
+		name:    "standard aa-Dataset key",
+		pattern: regexp.MustCompile(`(aa-Dataset-[a-z0-9]+-[a-z0-9]+)`),
+	},
+}
+
+func isImageKey(key string) bool {
+	ext := strings.ToLower(filepath.Ext(key))
+	return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif"
+}
+
+func isXMLKey(key string) bool {
+	return filepath.Ext(key) == ".xml"
+}
+
+func datasetIDFromKey(key string) (string, error) {
+	for _, extractor := range datasetIDExtractors {
+		if matches := extractor.pattern.FindStringSubmatch(key); len(matches) > 1 {
+			log.Debugf("Matched dataset ID %q using extractor %q", matches[1], extractor.name)
+			return matches[1], nil
+		}
+	}
+	return "", errors.New("no dataset ID pattern matched key")
+}
+
+type DownloadStats struct {
+	XMLDownloaded    int
+	ImagesDownloaded int
+	Skipped          int
+	Failed           int
+}
+
+func metadataDownloader(metadataclient *MetadataBackend) {
 
 	var (
-		Bucket         = Metadataclient.Bucket
-		Prefix         = "datasets/"
-		XmlDirectory   = "web/data/tmp/"
+		Bucket         = metadataclient.Bucket // Download from this bucket
+		Prefix         = "datasets/"           // Using this key prefix
+		XMLDirectory   = "web/data/tmp/"       // Into this directory
 		ImageDirectory = "web/static/img/"
 	)
 	client := Metadataclient.Client
 	const maxImagesToDownload = 5
 	stats := DownloadStats{}
 
-	downloader := s3manager.NewDownloader(client)
+	downloader := s3transfermanager.New(client, func(o *transfermanager.Options) {
+		o.PartSizeBytes = 64 * 1024 * 1024
+		o.Concurrency = 3
+	})
 	paginator := s3.NewListObjectsV2Paginator(client, &s3.ListObjectsV2Input{
 		Bucket: &Bucket,
 		Prefix: &Prefix,
@@ -112,10 +155,12 @@ func metadataDownloader(Metadataclient *MetadataBackend) {
 		stats.XMLDownloaded, stats.ImagesDownloaded, stats.Skipped, stats.Failed)
 }
 
-func downloadToFile(downloader *s3manager.Downloader, targetDirectory, bucket, key string) error {
-	datasetID, err := datasetIDFromKey(key)
-	if err != nil {
-		return fmt.Errorf("skipping key %q: %w", key, err)
+func downloadToFile(manager *transfermanager.Client, targetDirectory, bucket, key string) error {
+	// Create the directories in the path
+	re := regexp.MustCompile("aa-Dataset-([a-z0-9]+)-([a-z0-9]+)")
+	matches := re.FindStringSubmatch(key)
+	if len(matches) == 0 {
+		log.Infof("could not extract dataset ID from key: %s", key)
 	}
 
 	file := filepath.Join(targetDirectory, datasetID+".xml")
@@ -129,17 +174,15 @@ func downloadToFile(downloader *s3manager.Downloader, targetDirectory, bucket, k
 	}
 	defer fd.Close()
 
-	log.Debugf("Downloading XML %q -> %s", key, file)
-	ctx, cancel := context.WithTimeout(context.Background(), downloadTimeout)
-	defer cancel()
-	if _, err = downloader.Download(ctx, fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key}); err != nil {
-		return fmt.Errorf("downloading %q: %w", key, err)
+	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
+	if err != nil {
+		log.Fatal("Failed to download metadatafiles", err)
 	}
-	log.Debugf("Finished XML %s", file)
-	return nil
+	return err
 }
 
-func downloadImageToFolder(downloader *s3manager.Downloader, targetDirectory, bucket, key string) error {
+func downloadImageToFolder(downloader *transfermanager.Client, targetDirectory, bucket, key string) error {
+
 	parts := strings.Split(key, "/")
 	if len(parts) < 2 {
 		return fmt.Errorf("invalid key structure: %q", key)
@@ -164,11 +207,10 @@ func downloadImageToFolder(downloader *s3manager.Downloader, targetDirectory, bu
 	}
 	defer fd.Close()
 
-	log.Debugf("Downloading image %q -> %s", key, file)
-	ctx, cancel := context.WithTimeout(context.Background(), downloadTimeout)
-	defer cancel()
-	if _, err = downloader.Download(ctx, fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key}); err != nil {
-		return fmt.Errorf("downloading image %q: %w", key, err)
+	// Download the file
+	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
+	if err != nil {
+		log.Fatalf("failed to download image file: %v", err)
 	}
 	log.Debugf("Finished image %s", file)
 	return nil

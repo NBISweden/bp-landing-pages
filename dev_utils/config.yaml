@@ -3,7 +3,7 @@ S3MetadataBucket:
   accesskey: "myaccesskey"
   secretkey: "mysecretkey"
   region: "us-east-1"
-  bucket: "test"
+  bucket: "public-metadata"
   WebMetadataFolder: "web/content/"
 
 S3DeploymentBucket:

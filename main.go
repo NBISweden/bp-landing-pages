@@ -15,21 +15,21 @@ func main() {
 	log.Infof("Writing markdownfiles for respective XMLs")
 	metadataDownloader(Metadataclient)
 	markDownCreator()
-	hugo_cmd := exec.Command("hugo")
-	hugo_cmd.Dir = "./web/"
-	hugo_cmd.Stdout = os.Stdout
-	hugo_cmd.Stderr = os.Stderr
-	err := hugo_cmd.Run()
+	hugoCmd := exec.Command("hugo")
+	hugoCmd.Dir = "./web/"
+	hugoCmd.Stdout = os.Stdout
+	hugoCmd.Stderr = os.Stderr
+	err := hugoCmd.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Infof("Hugo successfully built")
-	pagefind_cmd := exec.Command("pagefind", "--site", "web/public/", "--output-path", "web/static/pagefind/")
-	pagefind_cmd.Stdout = os.Stdout
-	pagefind_cmd.Stderr = os.Stderr
-	pagefind_err := pagefind_cmd.Run()
-	if pagefind_err != nil {
-		log.Fatal(pagefind_err)
+	pagefindCmd := exec.Command("pagefind", "--site", "web/public/", "--output-path", "web/static/pagefind/")
+	pagefindCmd.Stdout = os.Stdout
+	pagefindCmd.Stderr = os.Stderr
+	pagefindErr := pagefindCmd.Run()
+	if pagefindErr != nil {
+		log.Fatal(pagefindErr)
 	}
 	log.Infof("Pagefind modules successfully built")
 	dConf := getDeploymentConfig()
