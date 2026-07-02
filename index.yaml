@@ -3,6 +3,16 @@ entries:
   landing-pages-chart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-07-02T16:26:15.333486073Z"
+    description: A Helm chart for Kubernetes
+    digest: 7ebbc2aa653118fcc1e1b9a2e635100df9daf727b0c99d65aff61599fbc646e4
+    name: landing-pages-chart
+    type: application
+    urls:
+    - https://github.com/NBISweden/bp-landing-pages/releases/download/landing-pages-chart-0.1.8/landing-pages-chart-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-10-15T14:52:58.225727935Z"
     description: A Helm chart for Kubernetes
     digest: 8d5191616dfb76c9dc4c4fe4f723f8adbc96bdfaf99211a0c7605a49f97c138a
@@ -81,4 +91,4 @@ entries:
     urls:
     - https://github.com/NBISweden/bp-landing-pages/releases/download/landing-pages-chart-0.1.0/landing-pages-chart-0.1.0.tgz
     version: 0.1.0
-generated: "2025-10-15T14:52:58.22576296Z"
+generated: "2026-07-02T16:26:15.333566513Z"
