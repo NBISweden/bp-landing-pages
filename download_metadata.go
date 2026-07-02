@@ -8,15 +8,12 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	log "github.com/sirupsen/logrus"
 )
-
-const downloadTimeout = 60 * time.Second
 
 type datasetIDExtractor struct {
 	name    string
@@ -28,45 +25,9 @@ var datasetIDExtractors = []datasetIDExtractor{
 		name:    "standard aa-Dataset key",
 		pattern: regexp.MustCompile(`(aa-Dataset-[a-z0-9]+-[a-z0-9]+)`),
 	},
-}
-
-func isImageKey(key string) bool {
-	ext := strings.ToLower(filepath.Ext(key))
-	return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif"
-}
-
-func isXMLKey(key string) bool {
-	return filepath.Ext(key) == ".xml"
-}
-
-func datasetIDFromKey(key string) (string, error) {
-	for _, extractor := range datasetIDExtractors {
-		if matches := extractor.pattern.FindStringSubmatch(key); len(matches) > 1 {
-			log.Debugf("Matched dataset ID %q using extractor %q", matches[1], extractor.name)
-			return matches[1], nil
-		}
-	}
-	return "", errors.New("no dataset ID pattern matched key")
-}
-
-type DownloadStats struct {
-	XMLDownloaded    int
-	ImagesDownloaded int
-	Skipped          int
-	Failed           int
-}
-
-const downloadTimeout = 60 * time.Second
-
-type datasetIDExtractor struct {
-	name    string
-	pattern *regexp.Regexp
-}
-
-var datasetIDExtractors = []datasetIDExtractor{
 	{
-		name:    "standard aa-Dataset key",
-		pattern: regexp.MustCompile(`(aa-Dataset-[a-z0-9]+-[a-z0-9]+)`),
+		name:    "standard cc-Dataset key",
+		pattern: regexp.MustCompile(`(cc-Dataset-[a-z0-9]+-[a-z0-9]+)`),
 	},
 }
 
@@ -104,11 +65,12 @@ func metadataDownloader(metadataclient *MetadataBackend) {
 		XMLDirectory   = "web/data/tmp/"       // Into this directory
 		ImageDirectory = "web/static/img/"
 	)
-	client := Metadataclient.Client
-	const maxImagesToDownload = 5
+	client := metadataclient.Client
+	const maxImagesPerDataset = 5
 	stats := DownloadStats{}
+	imageCountsByDataset := map[string]int{}
 
-	downloader := s3transfermanager.New(client, func(o *transfermanager.Options) {
+	downloader := transfermanager.New(client, func(o *transfermanager.Options) {
 		o.PartSizeBytes = 64 * 1024 * 1024
 		o.Concurrency = 3
 	})
@@ -127,7 +89,7 @@ func metadataDownloader(metadataclient *MetadataBackend) {
 
 			// Handle XML files
 			if isXMLKey(key) {
-				if err := downloadToFile(downloader, XmlDirectory, Bucket, key); err != nil {
+				if err := downloadToFile(downloader, XMLDirectory, Bucket, key); err != nil {
 					log.Warnf("Skipping XML %q: %v", key, err)
 					stats.Failed++
 				} else {
@@ -138,7 +100,14 @@ func metadataDownloader(metadataclient *MetadataBackend) {
 
 			// Handle image files (jpg, png, jpeg, gif, etc.)
 			if isImageKey(key) {
-				if stats.ImagesDownloaded >= maxImagesToDownload {
+				datasetID, err := datasetIDFromKey(key)
+				if err != nil {
+					log.Warnf("Skipping image %q: %v", key, err)
+					stats.Failed++
+					continue
+				}
+
+				if imageCountsByDataset[datasetID] >= maxImagesPerDataset {
 					stats.Skipped++
 					continue
 				}
@@ -147,6 +116,7 @@ func metadataDownloader(metadataclient *MetadataBackend) {
 					stats.Failed++
 				} else {
 					stats.ImagesDownloaded++
+					imageCountsByDataset[datasetID]++
 				}
 			}
 		}
@@ -156,15 +126,14 @@ func metadataDownloader(metadataclient *MetadataBackend) {
 }
 
 func downloadToFile(manager *transfermanager.Client, targetDirectory, bucket, key string) error {
-	// Create the directories in the path
-	re := regexp.MustCompile("aa-Dataset-([a-z0-9]+)-([a-z0-9]+)")
-	matches := re.FindStringSubmatch(key)
-	if len(matches) == 0 {
-		log.Infof("could not extract dataset ID from key: %s", key)
+	datasetID, err := datasetIDFromKey(key)
+	if err != nil {
+		return fmt.Errorf("extracting dataset ID from %q: %w", key, err)
 	}
 
 	file := filepath.Join(targetDirectory, datasetID+".xml")
-	if err := os.MkdirAll(filepath.Dir(file), 0775); err != nil {
+	err = os.MkdirAll(filepath.Dir(file), 0775)
+	if err != nil {
 		return fmt.Errorf("creating directory for %q: %w", file, err)
 	}
 
@@ -174,11 +143,13 @@ func downloadToFile(manager *transfermanager.Client, targetDirectory, bucket, ke
 	}
 	defer fd.Close()
 
-	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
+	_, err = manager.DownloadObject(context.TODO(), &transfermanager.DownloadObjectInput{Bucket: &bucket, Key: &key, WriterAt: fd})
 	if err != nil {
-		log.Fatal("Failed to download metadatafiles", err)
+		return fmt.Errorf("downloading XML %q: %w", key, err)
 	}
-	return err
+
+	log.Debugf("Finished XML %s", file)
+	return nil
 }
 
 func downloadImageToFolder(downloader *transfermanager.Client, targetDirectory, bucket, key string) error {
@@ -207,10 +178,9 @@ func downloadImageToFolder(downloader *transfermanager.Client, targetDirectory, 
 	}
 	defer fd.Close()
 
-	// Download the file
-	_, err = downloader.Download(context.TODO(), fd, &s3.GetObjectInput{Bucket: &bucket, Key: &key})
+	_, err = downloader.DownloadObject(context.TODO(), &transfermanager.DownloadObjectInput{Bucket: &bucket, Key: &key, WriterAt: fd})
 	if err != nil {
-		log.Fatalf("failed to download image file: %v", err)
+		return fmt.Errorf("downloading image %q: %w", key, err)
 	}
 	log.Debugf("Finished image %s", file)
 	return nil

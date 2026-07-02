@@ -176,14 +176,14 @@ func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 
 			finalPath := path.Join("/img", fileNameWithoutExt, cleanName)
 
-			b.WriteString(fmt.Sprintf("  - filename: %q\n", finalPath))
+			fmt.Fprintf(&b, "  - filename: %q\n", finalPath)
 
-			b.WriteString("    filetype: \"" + f.Filetype + "\"\n")
+			fmt.Fprintf(&b, "    filetype: %q\n", f.Filetype)
 			if f.Checksum != "" {
-				b.WriteString("    checksum: \"" + f.Checksum + "\"\n")
+				fmt.Fprintf(&b, "    checksum: %q\n", f.Checksum)
 			}
 			if f.UnencryptedChecksum != "" {
-				b.WriteString("    unencrypted_checksum: \"" + f.UnencryptedChecksum + "\"\n")
+				fmt.Fprintf(&b, "    unencrypted_checksum: %q\n", f.UnencryptedChecksum)
 			}
 		}
 	}
