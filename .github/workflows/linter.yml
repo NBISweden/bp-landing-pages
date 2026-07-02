@@ -6,7 +6,7 @@ on:
     branches:
       - main
 
-permissions: {}
+permissions: { }
 
 jobs:
   build:
@@ -34,3 +34,7 @@ jobs:
           JSCPD_CONFIG_FILE: .jscpd.json
           VALIDATE_JSCPD: false
           VALIDATE_HTML: false
+          VALIDATE_MARKDOWN: true
+          MARKDOWN_CONFIG_FILE: .markdownlint.json
+          VALIDATE_TRIVY: true
+          TRIVY_CONFIG_FILE: trivy.yaml

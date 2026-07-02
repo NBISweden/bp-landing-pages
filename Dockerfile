@@ -1,9 +1,10 @@
 FROM golang:1.26-alpine3.22 AS build
 
+USER lpuser
 WORKDIR /lp_app
 COPY . .
 ENV GO111MODULE=on
-ENV CGO_ENABLED=0
+ENV CGO_ENABLED=0 
 RUN go build -o app .
 
 FROM alpine:3.24

@@ -2,9 +2,9 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: lp-generator-cronjob
-  namespace: { { .Values.namespace } }
+  namespace: {{ .Values.namespace }}
 spec:
-  schedule: { { .Values.schedule } }
+  schedule: {{ .Values.schedule }}
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 3600
   jobTemplate:
@@ -29,7 +29,7 @@ spec:
                       name: "lp-generator-secret"
           containers:
             - name: lp-generator-container
-              image: { { .Values.images.lp_image } }
+              image: {{ .Values.images.lp_image }}
               imagePullPolicy: Always
               command: ["sh", "-c", "cp /app -r /web /tmp && cd /tmp && /app"]
               env:
