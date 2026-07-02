@@ -195,7 +195,14 @@
     </div>
     <aside>
       <div class="panel">
-        <h3>Sample Images</h3>
+                 <div class="meta">
+    <h3>Year</h3>
+    <strong>Doi:</strong> {{ .Params.doi }}<br/>
+    <strong>Year:</strong> {{ .Params.year_of_submission }}<br/>
+    <strong>Version:</strong> {{ .Params.dataset_version }}<br/>
+ 
+  </div>
+      <h3>Sample Images</h3>
 
         <div>
           <ul class="dataset-example-images" id="dataset-example-images">
@@ -204,6 +211,7 @@
             {{ end }}
           </ul>
         </div>
+       
         <div>
           <h3>Application</h3>
           <a
@@ -229,4 +237,8 @@
     );
   </script>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.js"></script>
+<script src="{{ "js/datasets-single.js" | relURL }}"></script>
+
 {{ end }}

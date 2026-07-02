@@ -1,3 +1,4 @@
+---
 name: Publish chart
 on:
   push:

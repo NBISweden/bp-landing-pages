@@ -3,4 +3,6 @@ web/content/datasets/test*
 web/data/*
 web/static/pagefind/*
 web/static/img/aa-*
+web/static/img/cc-*
 web/content/datasets/aa-*
+web/content/datasets/cc-*
