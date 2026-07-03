@@ -1,5 +1,6 @@
 FROM golang:1.26-alpine3.22 AS build
 
+RUN adduser -D lpuser
 USER lpuser
 WORKDIR /lp_app
 COPY . .
