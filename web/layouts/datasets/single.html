@@ -214,11 +214,13 @@
        
         <div>
           <h3>Application</h3>
-          <a
-            href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName }}"
-            ><button>Apply for access</button></a
-          >
-        </div>
+        {{ if .Params.rems_access_link }}
+         <a href='{{ .Params.rems_access_link }}'><button>Apply for access</button></a>
+         {{ else }}
+            <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName }}"><button>Apply for access</button></a>
+       
+          {{ end }}
+      </div>
       </div>
     </aside>
   </div>

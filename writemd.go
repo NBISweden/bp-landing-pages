@@ -18,6 +18,7 @@ type LandingPage struct {
 	DatasetRef       DatasetRef       `xml:"DATASET_REF"`
 	SampleImageFiles SampleImageFiles `xml:"SAMPLE_IMAGE_FILES"`
 	Attributes       Attributes       `xml:"ATTRIBUTES"`
+	RemsLink         string           `xml:"REMS_ACCESS_LINK"`
 }
 
 type DatasetRef struct {
@@ -95,8 +96,10 @@ func (a Attributes) GetSet(tag string) []string {
 }
 
 func escapeYAML(s string) string {
-	s = strings.ReplaceAll(s, "\t", "    ") // Replace tabs with 4 spaces
-	s = strings.ReplaceAll(s, "\"", "'")
+	s = strings.ReplaceAll(s, "\t", "    ")   // Replace tabs with 4 spaces
+	s = strings.ReplaceAll(s, "\u201C", "\"") // Normalize Unicode left double quote
+	s = strings.ReplaceAll(s, "\u201D", "\"") // Normalize Unicode right double quote
+	s = strings.ReplaceAll(s, "\"", "\\\"")
 	return s
 }
 func writeStringField(b *strings.Builder, key, value string) {
@@ -119,6 +122,7 @@ func writeListField(b *strings.Builder, key string, values []string) {
 
 func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 	attrs := lp.Attributes
+	fmt.Println(lp.RemsLink)
 	var b strings.Builder
 	b.WriteString("---\n")
 
@@ -138,7 +142,7 @@ func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
 	writeStringField(&b, "informed_consent_form_defined_use_restrictions", attrs.GetString("informed_consent_form_defined_use_restrictions"))
 	writeStringField(&b, "custom_use_restrictions", attrs.GetString("custom_use_restrictions"))
 	writeStringField(&b, "policy_text", attrs.GetString("policy_text"))
-
+	writeStringField(&b, "rems_access_link", lp.RemsLink)
 	// Numeric fields
 	writeStringField(&b, "number_of_biological_beings", attrs.GetNumber("number_of_biological_beings"))
 	writeStringField(&b, "number_of_cases", attrs.GetNumber("number_of_cases"))
