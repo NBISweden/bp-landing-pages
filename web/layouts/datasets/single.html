@@ -15,15 +15,20 @@
       </div>
       <div class="panel">
         <h3>Dataset Overview</h3>
-        <table>
+        <table class="dataset-info-table">
+          {{ if .Params.dataset_title }}
           <tr>
             <th>Title</th>
             <td>{{ .Params.dataset_title }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.dataset_short_name }}
           <tr>
             <th>Short name</th>
             <td>{{ .Params.dataset_short_name }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.age_at_extractions }}
           <tr>
             <th>Age at extraction</th>
             <td>
@@ -32,6 +37,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.anatomical_sites }}
           <tr>
             <th>Anatomical site</th>
             <td>
@@ -40,6 +47,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.animal_species }}
           <tr>
             <th>Animal species</th>
             <td>
@@ -48,6 +57,18 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.medical_diagnoses }}
+          <tr>
+            <th>Medical diagnosis</th>
+            <td>
+              {{ range .Params.medical_diagnoses }}
+              <p>{{ . }}</p>
+              {{ end }}
+            </td>
+          </tr>
+          {{ end }}
+          {{ if .Params.specimen_types }}
           <tr>
             <th>Specimen types</th>
             <td>
@@ -56,6 +77,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.image_types }}
           <tr>
             <th>Image type</th>
             <td>
@@ -64,6 +87,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.extraction_methods }}
           <tr>
             <th>Extraction method</th>
             <td>
@@ -72,6 +97,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.image_resolutions }}
           <tr>
             <th>Image resolution</th>
             <td>
@@ -80,100 +107,8 @@
               {{ end }}
             </td>
           </tr>
-          <tr>
-            <th>Type of access</th>
-            <td>{{ .Params.type_of_access }}</td>
-          </tr>
-          <tr>
-            <th>Staining</th>
-            <td>
-              {{ range .Params.stainings }}
-              <p>{{ . }}</p>
-              {{ end }}
-            </td>
-          </tr>
-          <tr>
-            <th>Cite as</th>
-            <td>{{ .Params.cite_as }}</td>
-          </tr>
-          <tr>
-            <th>Keywords</th>
-            <td>
-              {{ range .Params.keywords }}
-              <p>{{ . }}</p>
-              {{ end }}
-            </td>
-          </tr>
-          <tr>
-            <th>Year</th>
-            <td>{{ .Params.year_of_submission }}</td>
-          </tr>
-          <tr>
-            <th>DOI</th>
-            <td>
-              {{ if .Params.doi }}
-              <a href="https://doi.org/{{ .Params.doi }}">{{ .Params.doi }}</a>
-              {{ end }}
-            </td>
-          </tr>
-          <tr>
-            <th>Version</th>
-            <td>{{ .Params.dataset_version }}</td>
-          </tr>
-          <tr>
-            <th>Number of WSIs</th>
-            <td>{{ .Params.number_of_wsis }}</td>
-          </tr>
-          <tr>
-            <th>Number of cases</th>
-            <td>{{ .Params.number_of_cases }}</td>
-          </tr>
-          <tr>
-            <th>Number of biological beings</th>
-            <td>{{ .Params.number_of_biological_beings }}</td>
-          </tr>
-          <tr>
-            <th>Annotations</th>
-            <td>{{ .Params.number_of_annotations }}</td>
-          </tr>
-          <tr>
-            <th>Size</th>
-            <td>{{ .Params.dataset_size }}</td>
-          </tr>
-          <tr>
-            <th>Access approval process</th>
-            <td>{{ .Params.access_approval_process }}</td>
-          </tr>
-          <tr>
-            <th>Duration of use</th>
-            <td>{{ .Params.duration_of_use }}</td>
-          </tr>
-
-          <tr>
-            <th>Center name</th>
-            <td>{{ .Params.center_name }}</td>
-          </tr>
-          <tr>
-            <th>Metadata standard version</th>
-            <td>{{ .Params.metadata_standard_version }}</td>
-          </tr>
-        </table>
-      </div>
-      <div class="panel">
-        <h3>Terms of use</h3>
-        <table>
-          <tr>
-            <th>Allowed uses</th>
-            <td>
-              {{ range .Params.allowed_uses }}
-              <p>{{ . }}</p>
-              {{ end }}
-            </td>
-          </tr>
-          <tr>
-            <th>Allowed geographical distribution</th>
-            <td>{{ .Params.allowed_geographical_distribution }}</td>
-          </tr>
+          {{ end }}
+          {{ if .Params.geographical_areas }}
           <tr>
             <th>Geographical areas</th>
             <td>
@@ -182,15 +117,135 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.stainings }}
+          <tr>
+            <th>Staining</th>
+            <td>
+              <div class="collapsible-list" data-collapsible-max="5">
+                {{ range .Params.stainings }}
+                <span class="collapsible-item">{{ . }}</span>
+                {{ end }}
+              </div>
+            </td>
+          </tr>
+          {{ end }}
+          {{ if .Params.cite_as }}
+          <tr>
+            <th>Cite as</th>
+            <td>{{ .Params.cite_as }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.keywords }}
+          <tr>
+            <th>Keywords</th>
+            <td>
+              {{ range .Params.keywords }}
+              <p>{{ . }}</p>
+              {{ end }}
+            </td>
+          </tr>
+          {{ end }}
+          {{ if .Params.year_of_submission }}
+          <tr>
+            <th>Year</th>
+            <td>{{ .Params.year_of_submission }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.doi }}
+          <tr>
+            <th>DOI</th>
+            <td>
+              <a href="https://doi.org/{{ .Params.doi }}">{{ .Params.doi }}</a>
+            </td>
+          </tr>
+          {{ end }}
+          {{ if .Params.dataset_version }}
+          <tr>
+            <th>Version</th>
+            <td>{{ .Params.dataset_version }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.number_of_wsis }}
+          <tr>
+            <th>Number of WSIs</th>
+            <td>{{ .Params.number_of_wsis }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.number_of_cases }}
+          <tr>
+            <th>Number of cases</th>
+            <td>{{ .Params.number_of_cases }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.number_of_biological_beings }}
+          <tr>
+            <th>Number of biological beings</th>
+            <td>{{ .Params.number_of_biological_beings }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.number_of_annotations }}
+          <tr>
+            <th>Annotations</th>
+            <td>{{ .Params.number_of_annotations }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.dataset_size }}
+          <tr>
+            <th>Size</th>
+            <td data-size-value="{{ .Params.dataset_size }}">{{ .Params.dataset_size }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.center_name }}
+          <tr>
+            <th>Center name</th>
+            <td>{{ .Params.center_name }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.metadata_standard_version }}
+          <tr>
+            <th>Metadata standard version</th>
+            <td>{{ .Params.metadata_standard_version }}</td>
+          </tr>
+          {{ end }}
         </table>
       </div>
       <div class="panel">
-        <h3>Policy & Terms of Use</h3>
-        {{ if .Params.policy_text }}
-        <pre class="policy">{{ .Params.policy_text }}</pre>
-        {{ else }}
-        <p><em>No policy text provided.</em></p>
-        {{ end }}
+        <h3>Terms of Use</h3>
+        <table class="dataset-info-table">
+          {{ if .Params.type_of_access }}
+          <tr>
+            <th>Type of access</th>
+            <td>{{ .Params.type_of_access }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.access_approval_process }}
+          <tr>
+            <th>Access approval process</th>
+            <td>{{ .Params.access_approval_process }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.duration_of_use }}
+          <tr>
+            <th>Duration of use</th>
+            <td>{{ .Params.duration_of_use }}</td>
+          </tr>
+          {{ end }}
+          {{ if .Params.allowed_geographical_distribution }}
+          <tr>
+            <th>Allowed geographical distribution</th>
+            <td>{{ .Params.allowed_geographical_distribution }}</td>
+          </tr>
+          {{ end }}
+        </table>
+      </div>
+      <div class="panel">
+        <h3>Policy &amp; Terms of Use</h3>
+        <p>
+          <a href="https://bigpicture.eu/bigpicture-policy-data-users" target="_blank" rel="noopener noreferrer">
+            BigPicture policy for data users
+          </a>
+        </p>
       </div>
     </div>
     <aside>
@@ -214,11 +269,13 @@
        
         <div>
           <h3>Application</h3>
-          <a
-            href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName }}"
-            ><button>Apply for access</button></a
-          >
-        </div>
+        {{ if .Params.rems_access_link }}
+         <a href='{{ .Params.rems_access_link }}'><button>Apply for access</button></a>
+         {{ else }}
+            <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName }}"><button>Apply for access</button></a>
+       
+          {{ end }}
+      </div>
       </div>
     </aside>
   </div>
@@ -235,6 +292,74 @@
       document.getElementById("dataset-example-images"),
       { url: "data-original" },
     );
+
+    function formatDatasetSize(rawValue) {
+      if (!rawValue) return "N/A";
+
+      const digitsOnly = String(rawValue).replace(/[\s,]/g, "");
+      const parsed = Number(digitsOnly);
+
+      if (!Number.isFinite(parsed) || parsed <= 0) {
+        return digitsOnly || rawValue;
+      }
+
+      const units = [
+        { label: "TB", size: 1024 ** 4 },
+        { label: "GB", size: 1024 ** 3 },
+        { label: "MB", size: 1024 ** 2 },
+        { label: "KB", size: 1024 },
+      ];
+
+      const exactUnit = units.find((unit) => parsed >= unit.size);
+      if (exactUnit) {
+        const value = parsed / exactUnit.size;
+        const decimals = value >= 10 ? 1 : 2;
+        return `${value.toFixed(decimals)} ${exactUnit.label}`;
+      }
+
+      return new Intl.NumberFormat("en-GB").format(parsed) + " bytes";
+    }
+
+    document.querySelectorAll("[data-size-value]").forEach((element) => {
+      const value = element.getAttribute("data-size-value");
+      element.textContent = formatDatasetSize(value);
+    });
+
+    document.querySelectorAll(".collapsible-list").forEach((list) => {
+      const items = Array.from(list.querySelectorAll(".collapsible-item"));
+      const maxVisible = Number(list.dataset.collapsibleMax || 5);
+
+      if (items.length <= maxVisible) {
+        return;
+      }
+
+      items.forEach((item, index) => {
+        if (index >= maxVisible) {
+          item.hidden = true;
+          item.style.display = "none";
+        }
+      });
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "collapsible-toggle";
+      toggle.textContent = "See more";
+      toggle.setAttribute("aria-expanded", "false");
+
+      toggle.addEventListener("click", () => {
+        const expanded = list.classList.toggle("is-expanded");
+        items.forEach((item, index) => {
+          if (index >= maxVisible) {
+            item.hidden = !expanded;
+            item.style.display = expanded ? "inline-block" : "none";
+          }
+        });
+        toggle.textContent = expanded ? "See less" : "See more";
+        toggle.setAttribute("aria-expanded", String(expanded));
+      });
+
+      list.insertAdjacentElement("afterend", toggle);
+    });
   </script>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.css">

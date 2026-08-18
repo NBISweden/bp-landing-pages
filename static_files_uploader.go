@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,7 +11,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 func staticSiteUploader(deploymenClient *DeploymentBackend) {
@@ -47,7 +49,7 @@ func staticSiteUploader(deploymenClient *DeploymentBackend) {
 		var fileSize = fileInfo.Size()
 
 		buf := make([]byte, fileSize)
-		_, err = file.Read(buf)
+		_, err = io.ReadFull(file, buf)
 		contentType := http.DetectContentType(buf)
 		ext := filepath.Ext(path)
 		if ext == ".css" {
@@ -68,11 +70,8 @@ func staticSiteUploader(deploymenClient *DeploymentBackend) {
 		}
 
 		client := deploymenClient.Client
-		uploader := transfermanager.New(client, func(o *transfermanager.Options) {
-			o.PartSizeBytes = 64 * 1024 * 1024
-			o.Concurrency = 3
-		})
-		result, err := uploader.UploadObject(context.TODO(), &transfermanager.UploadObjectInput{
+		uploader := manager.NewUploader(client)
+		result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
 			Bucket:      &bucket,
 			Key:         aws.String(rel),
 			Body:        bytes.NewReader(buf),

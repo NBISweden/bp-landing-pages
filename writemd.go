@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v3"
 )
 
 type LandingPageSet struct {
@@ -18,6 +18,7 @@ type LandingPage struct {
 	DatasetRef       DatasetRef       `xml:"DATASET_REF"`
 	SampleImageFiles SampleImageFiles `xml:"SAMPLE_IMAGE_FILES"`
 	Attributes       Attributes       `xml:"ATTRIBUTES"`
+	RemsLink         string           `xml:"REMS_ACCESS_LINK"`
 }
 
 type DatasetRef struct {
@@ -94,112 +95,121 @@ func (a Attributes) GetSet(tag string) []string {
 	return nil
 }
 
-func escapeYAML(s string) string {
-	s = strings.ReplaceAll(s, "\t", "    ") // Replace tabs with 4 spaces
-	s = strings.ReplaceAll(s, "\"", "'")
-	return s
-}
-func writeStringField(b *strings.Builder, key, value string) {
-	if strings.TrimSpace(value) == "" {
-		fmt.Fprintf(b, "%s: \"\"\n", key)
-	} else {
-		fmt.Fprintf(b, "%s: \"%s\"\n", key, escapeYAML(value))
-	}
+func normalizeSampleImageName(name string) string {
+	name = strings.TrimPrefix(name, "LANDING_PAGE/THUMBNAILS/")
+	name = strings.TrimPrefix(name, "LANDING_PAGE/")
+	return strings.TrimSuffix(name, ".c4gh")
 }
 
-func writeListField(b *strings.Builder, key string, values []string) {
-	if len(values) == 0 {
-		return
-	}
-	fmt.Fprintf(b, "%s:\n", key)
-	for _, item := range values {
-		fmt.Fprintf(b, "  - \"%s\"\n", escapeYAML(item))
-	}
-}
-
-func toFrontMatter(lp LandingPage, fileNameWithoutExt string) string {
+func frontMatterFromAttributes(lp LandingPage, fileNameWithoutExt string) map[string]any {
 	attrs := lp.Attributes
-	var b strings.Builder
-	b.WriteString("---\n")
+	result := map[string]any{}
 
-	// Extract fields individually in desired order
-	writeStringField(&b, "header", attrs.GetString("header"))
-	writeStringField(&b, "doi", attrs.GetString("doi"))
-	writeStringField(&b, "dataset_title", attrs.GetString("dataset_title"))
-	writeStringField(&b, "dataset_short_name", attrs.GetString("dataset_short_name"))
-	writeStringField(&b, "dataset_version", attrs.GetString("dataset_version"))
-	writeStringField(&b, "metadata_standard_version", attrs.GetString("metadata_standard_version"))
-	writeStringField(&b, "center_name", attrs.GetString("center_name"))
-	writeStringField(&b, "access_approval_process", attrs.GetString("access_approval_process"))
-	writeStringField(&b, "type_of_access", attrs.GetString("type_of_access"))
-	writeStringField(&b, "allowed_geographical_distribution", attrs.GetString("allowed_geographical_distribution"))
-	writeStringField(&b, "duration_of_use", attrs.GetString("duration_of_use"))
-	writeStringField(&b, "defined_research_question_required", attrs.GetString("defined_research_question_required"))
-	writeStringField(&b, "informed_consent_form_defined_use_restrictions", attrs.GetString("informed_consent_form_defined_use_restrictions"))
-	writeStringField(&b, "custom_use_restrictions", attrs.GetString("custom_use_restrictions"))
-	writeStringField(&b, "policy_text", attrs.GetString("policy_text"))
+	stringFields := []string{
+		"header",
+		"doi",
+		"dataset_title",
+		"dataset_short_name",
+		"dataset_version",
+		"metadata_standard_version",
+		"center_name",
+		"access_approval_process",
+		"type_of_access",
+		"allowed_geographical_distribution",
+		"duration_of_use",
+		"defined_research_question_required",
+		"informed_consent_form_defined_use_restrictions",
+		"custom_use_restrictions",
+		"policy_text",
+		"dataset_description",
+	}
+	for _, key := range stringFields {
+		result[key] = attrs.GetString(key)
+	}
+	result["rems_access_link"] = lp.RemsLink
 
-	// Numeric fields
-	writeStringField(&b, "number_of_biological_beings", attrs.GetNumber("number_of_biological_beings"))
-	writeStringField(&b, "number_of_cases", attrs.GetNumber("number_of_cases"))
-	writeStringField(&b, "number_of_wsis", attrs.GetNumber("number_of_wsis"))
-	writeStringField(&b, "number_of_observations", attrs.GetNumber("number_of_observations"))
-	writeStringField(&b, "number_of_annotations", attrs.GetNumber("number_of_annotations"))
-	writeStringField(&b, "dataset_size", attrs.GetNumber("dataset_size"))
-	writeStringField(&b, "year_of_submission", attrs.GetNumber("year_of_submission"))
-	writeStringField(&b, "dataset_description", attrs.GetString("dataset_description"))
-	// Set fields
-	writeListField(&b, "keywords", attrs.GetSet("keywords"))
-	writeListField(&b, "animal_species", attrs.GetSet("animal_species"))
-	writeListField(&b, "anatomical_sites", attrs.GetSet("anatomical_sites"))
-	writeListField(&b, "age_at_extractions", attrs.GetSet("age_at_extractions"))
-	writeListField(&b, "extraction_methods", attrs.GetSet("extraction_methods"))
-	writeListField(&b, "specimen_types", attrs.GetSet("specimen_types"))
-	writeListField(&b, "stainings", attrs.GetSet("stainings"))
-	writeListField(&b, "medical_diagnoses", attrs.GetSet("medical_diagnoses"))
-	writeListField(&b, "image_types", attrs.GetSet("image_types"))
-	writeListField(&b, "image_resolutions", attrs.GetSet("image_resolutions"))
-	writeListField(&b, "geographical_areas", attrs.GetSet("geographical_areas"))
-	writeListField(&b, "changelog", attrs.GetSet("changelog"))
-	writeListField(&b, "cite_as", attrs.GetSet("cite_as"))
-	writeListField(&b, "references", attrs.GetSet("references"))
-	writeListField(&b, "comments", attrs.GetSet("comments"))
-	writeListField(&b, "allowed_uses", attrs.GetSet("allowed_uses"))
+	numericFields := []string{
+		"number_of_biological_beings",
+		"number_of_cases",
+		"number_of_wsis",
+		"number_of_observations",
+		"number_of_annotations",
+		"dataset_size",
+		"year_of_submission",
+	}
+	for _, key := range numericFields {
+		result[key] = attrs.GetNumber(key)
+	}
 
-	// Sample images
-	if len(lp.SampleImageFiles.Files) > 0 {
-		b.WriteString("sample_images:\n")
-		for _, f := range lp.SampleImageFiles.Files {
-			cleanName := strings.TrimPrefix(f.Filename, "LANDING_PAGE/THUMBNAILS/")
-			cleanName = strings.TrimPrefix(cleanName, "LANDING_PAGE/")
-			cleanName = strings.TrimSuffix(cleanName, ".c4gh")
-
-			finalPath := path.Join("/img", fileNameWithoutExt, cleanName)
-
-			fmt.Fprintf(&b, "  - filename: %q\n", finalPath)
-
-			fmt.Fprintf(&b, "    filetype: %q\n", f.Filetype)
-			if f.Checksum != "" {
-				fmt.Fprintf(&b, "    checksum: %q\n", f.Checksum)
-			}
-			if f.UnencryptedChecksum != "" {
-				fmt.Fprintf(&b, "    unencrypted_checksum: %q\n", f.UnencryptedChecksum)
-			}
+	setFields := []string{
+		"keywords",
+		"animal_species",
+		"anatomical_sites",
+		"age_at_extractions",
+		"extraction_methods",
+		"specimen_types",
+		"stainings",
+		"medical_diagnoses",
+		"image_types",
+		"image_resolutions",
+		"geographical_areas",
+		"changelog",
+		"cite_as",
+		"references",
+		"comments",
+		"allowed_uses",
+	}
+	for _, key := range setFields {
+		values := attrs.GetSet(key)
+		if len(values) > 0 {
+			result[key] = values
 		}
 	}
 
-	b.WriteString("---\n\n")
-	return b.String()
+	if len(lp.SampleImageFiles.Files) > 0 {
+		var sampleImages []map[string]any
+		for _, f := range lp.SampleImageFiles.Files {
+			cleanName := normalizeSampleImageName(f.Filename)
+			entry := map[string]any{
+				"filename": path.Join("/img", fileNameWithoutExt, cleanName),
+				"filetype": f.Filetype,
+			}
+			if f.Checksum != "" {
+				entry["checksum"] = f.Checksum
+			}
+			if f.UnencryptedChecksum != "" {
+				entry["unencrypted_checksum"] = f.UnencryptedChecksum
+			}
+			sampleImages = append(sampleImages, entry)
+		}
+		result["sample_images"] = sampleImages
+	}
+
+	return result
+}
+
+func toFrontMatter(lp LandingPage, fileNameWithoutExt string) (string, error) {
+	data := frontMatterFromAttributes(lp, fileNameWithoutExt)
+	out, err := yaml.Marshal(data)
+	if err != nil {
+		return "", fmt.Errorf("marshal front matter: %w", err)
+	}
+	return "---\n" + string(out) + "---\n", nil
 }
 
 func markdownWriter(xmlContent []byte, fileNameWithoutExt string) (string, error) {
-
 	var set LandingPageSet
 	if err := xml.Unmarshal(xmlContent, &set); err != nil {
-		log.Errorf("Error while unmarshallaing %d", err)
+		return "", fmt.Errorf("unmarshal landing page XML: %w", err)
+	}
+	if len(set.Pages) == 0 {
+		return "", fmt.Errorf("no landing pages found in XML")
 	}
 
-	front := toFrontMatter(set.Pages[0], fileNameWithoutExt)
+	front, err := toFrontMatter(set.Pages[0], fileNameWithoutExt)
+	if err != nil {
+		return "", err
+	}
 
 	return front, nil
 }
