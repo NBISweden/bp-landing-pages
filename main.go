@@ -24,14 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Infof("Hugo successfully built")
-	pagefindCmd := exec.Command("pagefind", "--site", "web/public/", "--output-path", "web/static/pagefind/")
-	pagefindCmd.Stdout = os.Stdout
-	pagefindCmd.Stderr = os.Stderr
-	pagefindErr := pagefindCmd.Run()
-	if pagefindErr != nil {
-		log.Fatal(pagefindErr)
-	}
-	log.Infof("Pagefind modules successfully built")
+
 	dConf := getDeploymentConfig()
 	DeploymenClient := connectDeployments3(dConf)
 	staticSiteUploader(DeploymenClient)
