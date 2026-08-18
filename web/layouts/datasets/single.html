@@ -16,14 +16,19 @@
       <div class="panel">
         <h3>Dataset Overview</h3>
         <table class="dataset-info-table">
+          {{ if .Params.dataset_title }}
           <tr>
             <th>Title</th>
             <td>{{ .Params.dataset_title }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.dataset_short_name }}
           <tr>
             <th>Short name</th>
             <td>{{ .Params.dataset_short_name }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.age_at_extractions }}
           <tr>
             <th>Age at extraction</th>
             <td>
@@ -32,6 +37,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.anatomical_sites }}
           <tr>
             <th>Anatomical site</th>
             <td>
@@ -40,6 +47,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.animal_species }}
           <tr>
             <th>Animal species</th>
             <td>
@@ -48,6 +57,18 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.medical_diagnoses }}
+          <tr>
+            <th>Medical diagnosis</th>
+            <td>
+              {{ range .Params.medical_diagnoses }}
+              <p>{{ . }}</p>
+              {{ end }}
+            </td>
+          </tr>
+          {{ end }}
+          {{ if .Params.specimen_types }}
           <tr>
             <th>Specimen types</th>
             <td>
@@ -56,6 +77,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.image_types }}
           <tr>
             <th>Image type</th>
             <td>
@@ -64,6 +87,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.extraction_methods }}
           <tr>
             <th>Extraction method</th>
             <td>
@@ -72,6 +97,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.image_resolutions }}
           <tr>
             <th>Image resolution</th>
             <td>
@@ -80,6 +107,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.geographical_areas }}
           <tr>
             <th>Geographical areas</th>
             <td>
@@ -88,6 +117,8 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.stainings }}
           <tr>
             <th>Staining</th>
             <td>
@@ -98,10 +129,14 @@
               </div>
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.cite_as }}
           <tr>
             <th>Cite as</th>
             <td>{{ .Params.cite_as }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.keywords }}
           <tr>
             <th>Keywords</th>
             <td>
@@ -110,71 +145,98 @@
               {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.year_of_submission }}
           <tr>
             <th>Year</th>
             <td>{{ .Params.year_of_submission }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.doi }}
           <tr>
             <th>DOI</th>
             <td>
-              {{ if .Params.doi }}
               <a href="https://doi.org/{{ .Params.doi }}">{{ .Params.doi }}</a>
-              {{ end }}
             </td>
           </tr>
+          {{ end }}
+          {{ if .Params.dataset_version }}
           <tr>
             <th>Version</th>
             <td>{{ .Params.dataset_version }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.number_of_wsis }}
           <tr>
             <th>Number of WSIs</th>
             <td>{{ .Params.number_of_wsis }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.number_of_cases }}
           <tr>
             <th>Number of cases</th>
             <td>{{ .Params.number_of_cases }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.number_of_biological_beings }}
           <tr>
             <th>Number of biological beings</th>
             <td>{{ .Params.number_of_biological_beings }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.number_of_annotations }}
           <tr>
             <th>Annotations</th>
             <td>{{ .Params.number_of_annotations }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.dataset_size }}
           <tr>
             <th>Size</th>
             <td data-size-value="{{ .Params.dataset_size }}">{{ .Params.dataset_size }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.center_name }}
           <tr>
             <th>Center name</th>
             <td>{{ .Params.center_name }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.metadata_standard_version }}
           <tr>
             <th>Metadata standard version</th>
             <td>{{ .Params.metadata_standard_version }}</td>
           </tr>
+          {{ end }}
         </table>
       </div>
       <div class="panel">
         <h3>Terms of Use</h3>
         <table class="dataset-info-table">
+          {{ if .Params.type_of_access }}
           <tr>
             <th>Type of access</th>
             <td>{{ .Params.type_of_access }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.access_approval_process }}
           <tr>
             <th>Access approval process</th>
             <td>{{ .Params.access_approval_process }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.duration_of_use }}
           <tr>
             <th>Duration of use</th>
             <td>{{ .Params.duration_of_use }}</td>
           </tr>
+          {{ end }}
+          {{ if .Params.allowed_geographical_distribution }}
           <tr>
             <th>Allowed geographical distribution</th>
             <td>{{ .Params.allowed_geographical_distribution }}</td>
           </tr>
+          {{ end }}
         </table>
       </div>
       <div class="panel">
