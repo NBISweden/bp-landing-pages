@@ -11,7 +11,8 @@
   --color-card: #fff;
 }
 
-html, body {
+html,
+body {
   min-height: 100%;
   height: 100%;
 }
@@ -30,6 +31,7 @@ body {
 
 .main-content {
   flex: 1 0 auto;
+  overflow-wrap: break-word;
 }
 
 .page-header {
@@ -246,10 +248,6 @@ body {
 
 .main-content h2 {
   color: var(--color-primary-hover);
-}
-
-.main-content {
-  overflow-wrap: break-word;
 }
 
 .main-content :first-child {
