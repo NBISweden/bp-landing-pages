@@ -28,6 +28,8 @@
         stainings: new Set(),
         imageTypes: new Set(),
         accessTypes: new Set(),
+        allowedGeographicalDistributions: new Set(),
+        allowedUses: new Set(),
       };
 
       let activeFiltersCount = 0;
@@ -48,6 +50,8 @@
         const stainings = getValues(card, "stainings");
         const imageTypes = getValues(card, "imageTypes");
         const accessTypes = getValues(card, "accessTypes");
+        const allowedGeographicalDistributions = getValues(card, 'allowedGeographicalDistributions')
+        const allowedUses = getValues(card, 'allowedUses')
         const searchableText = normalize(card.dataset.searchText);
 
         const matchesKeywords =
@@ -62,6 +66,12 @@
         const matchesAccessTypes =
           selected.accessTypes.size === 0 ||
           accessTypes.some((v) => selected.accessTypes.has(v));
+        const matchesAllowedGeographicalDistributions =
+          selected.allowedGeographicalDistributions.size === 0 ||
+          allowedGeographicalDistributions.some((v) => selected.allowedGeographicalDistributions.has(v));
+        const matchesAllowedUses =
+          selected.allowedUses.size === 0 ||
+          allowedUses.some((v) => selected.allowedUses.has(v));
         const matchesQuery =
           queryTerms.length === 0 ||
           queryTerms.every((term) => searchableText.includes(term));
@@ -71,6 +81,8 @@
           matchesStainings &&
           matchesImageTypes &&
           matchesAccessTypes &&
+          matchesAllowedGeographicalDistributions &&
+          matchesAllowedUses &&
           matchesQuery;
         card.style.display = visible ? "" : "none";
         if (visible) visibleCount += 1;
