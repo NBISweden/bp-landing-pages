@@ -4,6 +4,9 @@
 {{ $stainingOptions := slice }}
 {{ $imageTypeOptions := slice }}
 {{ $accessTypeOptions := slice }}
+{{ $allowedGeographicalDistributionOptions := slice }}
+{{ $allowedUsesOptions := slice }}
+
 {{ range $datasets }}
   {{ with .Params.keywords }}
     {{ range . }}
@@ -23,12 +26,22 @@
   {{ with .Params.type_of_access }}
     {{ $accessTypeOptions = $accessTypeOptions | append . }}
   {{ end }}
+  {{ with .Params.allowed_geographical_distribution }}
+    {{ $allowedGeographicalDistributionOptions = $allowedGeographicalDistributionOptions | append . }}
+  {{ end }}
+  {{ with .Params.allowed_uses }}
+    {{ range . }}
+      {{ $allowedUsesOptions = $allowedUsesOptions | append (strings.Title . ) }}
+    {{ end }}
+  {{ end }}
 {{ end }}
 
 {{ $keywordOptions = $keywordOptions | uniq | sort }}
 {{ $stainingOptions = $stainingOptions | uniq | sort }}
 {{ $imageTypeOptions = $imageTypeOptions | uniq | sort }}
 {{ $accessTypeOptions = $accessTypeOptions | uniq | sort }}
+{{ $allowedGeographicalDistributionOptions = $allowedGeographicalDistributionOptions | uniq | sort }}
+{{ $allowedUsesOptions = $allowedUsesOptions | uniq | sort }}
 
 <div>
   <div data-pagefind-ignore="all" class="container">
@@ -80,6 +93,28 @@
             {{ end }}
           </div>
         </details>
+
+        <details class="dataset-filter-group" open>
+          <summary>Allowed geographical distribution</summary>
+          <div class="dataset-filter-options">
+            {{ range $allowedGeographicalDistributionOptions }}
+            <label><input type="checkbox" class="dataset-filter-checkbox" data-filter-group="allowedGeographicalDistributions" value="{{ lower . }}">
+              {{ . }}</label>
+            {{ end }}
+          </div>
+        </details>
+
+        <details class="dataset-filter-group" open>
+          <summary>Allowed geographical distribution</summary>
+          <div class="dataset-filter-options">
+            {{ range $allowedUsesOptions }}
+            <label><input type="checkbox" class="dataset-filter-checkbox" data-filter-group="allowedUses"
+                value="{{ lower . }}">
+              {{ . }}</label>
+            {{ end }}
+          </div>
+        </details>
+
       </aside>
 
       <div>
@@ -116,6 +151,18 @@
           {{ $cardAccessTypes = $cardAccessTypes | append (lower .) }}
         {{ end }}
 
+        {{ $cardAllowedGeographicalDistributions := slice }}
+        {{ with .Params.allowed_geographical_distribution }}
+          {{ $cardAllowedGeographicalDistributions = $cardAllowedGeographicalDistributions | append (lower .) }}
+        {{ end }}
+
+        {{ $cardAllowedUses := slice }}
+        {{ with .Params.allowed_uses }}
+          {{ range .}}
+            {{ $cardAllowedUses = $cardAllowedUses | append (lower .) }}
+          {{ end }}
+      {{ end }}
+
         {{ $searchValues := slice }}
         {{ with .Params.dataset_title }}
           {{ $searchValues = $searchValues | append (lower .) }}
@@ -144,8 +191,24 @@
         {{ with .Params.type_of_access }}
           {{ $searchValues = $searchValues | append (lower .) }}
         {{ end }}
+        {{ with .Params.allowed_geographical_distribution }}
+          {{ $searchValues = $searchValues | append (lower .) }}
+        {{ end }}
+        {{ with .Params.allowed_use }}
+          {{ range . }}
+            {{ $searchValues = $searchValues | append (lower .) }}
+          {{ end }}
+        {{ end }}
 
-        <a href="{{ .RelPermalink }}" class="dataset-card-link" data-keywords="{{ delimit $cardKeywords "|" }}" data-stainings="{{ delimit $cardStainings "|" }}" data-image-types="{{ delimit $cardImageTypes "|" }}" data-access-types="{{ delimit $cardAccessTypes "|" }}" data-search-text="{{ delimit $searchValues " | " }}">
+        <a href="{{ .RelPermalink }}" class="dataset-card-link"
+          data-keywords="{{ delimit $cardKeywords "|" }}"
+          data-stainings="{{ delimit $cardStainings "|" }}"
+          data-image-types="{{ delimit $cardImageTypes "|" }}"
+          data-access-types="{{ delimit $cardAccessTypes "|" }}"
+          data-search-text="{{ delimit $searchValues " | " }}"
+          data-allowed-uses="{{ delimit $cardAllowedUses "|" }}"
+          data-allowed-geographical-distributions="{{ delimit $cardAllowedGeographicalDistributions "|" }}"
+          >
           <div class="card-body">
             
             <div class="card-thumb">   
