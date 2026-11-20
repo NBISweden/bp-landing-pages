@@ -54,6 +54,8 @@ func (t *typeFixer) UpdateRequest(i *transfermanager.UploadObjectInput) {
 		i.ContentType = new("image/jpeg")
 	case ".png":
 		i.ContentType = new("image/png")
+	case ".gif":
+		i.ContentType = new("image/gif")
 	case ".js":
 		i.ContentType = new("application/javascript")
 	case ".xml":
