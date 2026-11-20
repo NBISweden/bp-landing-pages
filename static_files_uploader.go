@@ -59,7 +59,7 @@ func (t *typeFixer) UpdateRequest(i *transfermanager.UploadObjectInput) {
 	case ".xml":
 		i.ContentType = new("application/xml")
 	case ".html":
-		i.ContentType = new("application/html")
+		i.ContentType = new("text/html")
 
 	}
 
