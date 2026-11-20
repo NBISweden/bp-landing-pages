@@ -126,7 +126,7 @@ func metadataDownloader(metadataclient *MetadataBackend) error {
 		stats.XMLDownloaded, stats.ImagesDownloaded, stats.Skipped, stats.Failed)
 
 	if stats.Failed != 0 {
-		return fmt.Errorf("%d failed downloads occured", stats.Failed)
+		return fmt.Errorf("%d failed downloads occurred", stats.Failed)
 	}
 
 	return nil
