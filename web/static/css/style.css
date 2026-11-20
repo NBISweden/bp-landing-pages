@@ -1261,3 +1261,14 @@ pre.policy {
   cursor: pointer;
   text-decoration: underline;
 }
+
+.datasets-crumbs {
+  display: none;
+}
+
+@media screen {
+  .datasets-crumbs {
+    font-size: 0.68rem;
+    display: block;
+  }
+}
