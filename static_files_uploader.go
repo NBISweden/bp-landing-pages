@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -45,7 +46,7 @@ type typeFixer struct{}
 func (t *typeFixer) UpdateRequest(i *transfermanager.UploadObjectInput) {
 	ext := filepath.Ext(*i.Key)
 
-	switch ext {
+	switch strings.ToLower(ext) {
 	case ".css":
 		i.ContentType = new("text/css")
 	case ".svg":
