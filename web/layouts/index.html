@@ -105,7 +105,7 @@
         </details>
 
         <details class="dataset-filter-group" open>
-          <summary>Allowed geographical distribution</summary>
+          <summary>Allowed uses</summary>
           <div class="dataset-filter-options">
             {{ range $allowedUsesOptions }}
             <label><input type="checkbox" class="dataset-filter-checkbox" data-filter-group="allowedUses"
@@ -194,7 +194,7 @@
         {{ with .Params.allowed_geographical_distribution }}
           {{ $searchValues = $searchValues | append (lower .) }}
         {{ end }}
-        {{ with .Params.allowed_use }}
+        {{ with .Params.allowed_uses }}
           {{ range . }}
             {{ $searchValues = $searchValues | append (lower .) }}
           {{ end }}
