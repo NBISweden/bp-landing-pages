@@ -57,7 +57,7 @@ type DownloadStats struct {
 	Failed           int
 }
 
-func metadataDownloader(metadataclient *MetadataBackend) {
+func metadataDownloader(metadataclient *MetadataBackend) error {
 
 	var (
 		Bucket         = metadataclient.Bucket // Download from this bucket
@@ -82,7 +82,7 @@ func metadataDownloader(metadataclient *MetadataBackend) {
 	for paginator.HasMorePages() {
 		page, err := paginator.NextPage(context.TODO())
 		if err != nil {
-			log.Fatalln("Error while paginating the s3 bucket", err)
+			return fmt.Errorf("error while paginating the s3 bucket: %w", err)
 		}
 		for _, obj := range page.Contents {
 			key := aws.ToString(obj.Key)
@@ -121,8 +121,11 @@ func metadataDownloader(metadataclient *MetadataBackend) {
 			}
 		}
 	}
+
 	log.Infof("Completed: xml=%d images=%d skipped=%d failed=%d",
 		stats.XMLDownloaded, stats.ImagesDownloaded, stats.Skipped, stats.Failed)
+
+	return nil
 }
 
 func downloadToFile(manager *transfermanager.Client, targetDirectory, bucket, key string) error {
