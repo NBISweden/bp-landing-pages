@@ -8,17 +8,21 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
 )
 
-func staticSiteUploader(deploymenClient *DeploymentBackend) error {
+func staticSiteUploader(deploymenClient *Backend) error {
 	var (
 		localPath = "web/public/"
 		bucket    = deploymenClient.Bucket
 	)
 
 	client := deploymenClient.Client
-	uploadClient := transfermanager.New(client)
+	uploadClient := transfermanager.New(client, func(o *transfermanager.Options) {
+		o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
+
+	})
 
 	result, err := uploadClient.UploadDirectory(context.TODO(), &transfermanager.UploadDirectoryInput{
 		Bucket:    &bucket,
