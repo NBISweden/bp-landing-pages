@@ -21,12 +21,17 @@ type DeploymentBackend struct {
 	Bucket string
 }
 
-func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
+type Backend struct {
+	Client *s3.Client
+	Bucket string
+}
+
+func getBackend(s3config S3Config) *Backend {
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion("us-east-1"),
+		config.WithRegion(s3config.Region),
 		config.WithHTTPClient(&http.Client{Transport: &http.Transport{}}),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(mConf.AccessKey, mConf.SecretKey, "")),
+		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(s3config.AccessKey, s3config.SecretKey, "")),
 	)
 
 	if err != nil {
@@ -35,25 +40,31 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 	client := s3.NewFromConfig(cfg,
 
 		func(o *s3.Options) {
-			o.BaseEndpoint = aws.String(mConf.URL)
-			o.EndpointOptions.DisableHTTPS = strings.HasPrefix(mConf.URL, "http:")
-			o.Region = "us-west-1"
+			o.BaseEndpoint = aws.String(s3config.URL)
+			o.EndpointOptions.DisableHTTPS = strings.HasPrefix(s3config.URL, "http:")
+			o.Region = s3config.Region
 			o.UsePathStyle = true
 			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
 			o.ResponseChecksumValidation = aws.ResponseChecksumValidationWhenRequired
 		})
-	metadataClient := &MetadataBackend{
 
+	return &Backend{
 		Client: client,
-		Bucket: mConf.Bucket,
+		Bucket: s3config.Bucket,
 	}
-	resp, err := metadataClient.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
-		Bucket: aws.String(metadataClient.Bucket),
+
+}
+
+func connectMetadatas3(mConf MetadataS3Config) *Backend {
+
+	backend := getBackend(mConf.S3Config)
+	resp, err := backend.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+		Bucket: aws.String(backend.Bucket),
 	})
 	if err != nil {
 		log.Fatalf("Error while connecting to the metadata bucket %v\n ", err)
 	}
-	log.Infoln("Connection established to metadata bucket", metadataClient.Bucket)
+	log.Infoln("Connection established to metadata bucket", backend.Bucket)
 
 	// Abort if 0 metadata files found in bucket
 	numberOfFiles := 0
@@ -65,39 +76,19 @@ func connectMetadatas3(mConf MetadataS3Config) *MetadataBackend {
 	if numberOfFiles == 0 {
 		log.Fatal("No Metadata files found in bucket. Length of files ", numberOfFiles)
 	}
-	return metadataClient
+	return backend
 }
 
-func connectDeployments3(dConf DeployS3Config) *DeploymentBackend {
+func connectDeployments3(dConf DeployS3Config) *Backend {
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(),
-		config.WithRegion("us-east-1"),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(dConf.AccessKey, dConf.SecretKey, "")),
-	)
+	backend := getBackend(dConf.S3Config)
 
-	if err != nil {
-		log.Fatalf("Error while setting up s3 config: %v\n ", err)
-	}
-	client := s3.NewFromConfig(cfg,
-		func(o *s3.Options) {
-			o.BaseEndpoint = aws.String(dConf.URL)
-			o.EndpointOptions.DisableHTTPS = strings.HasPrefix(dConf.URL, "http:")
-			o.Region = "us-east-1"
-			o.UsePathStyle = true
-			o.RequestChecksumCalculation = aws.RequestChecksumCalculationWhenRequired
-			o.ResponseChecksumValidation = aws.ResponseChecksumValidationWhenRequired
-		})
-	deploymentClient := &DeploymentBackend{
-
-		Client: client,
-		Bucket: dConf.Bucket,
-	}
-	_, err = deploymentClient.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
-		Bucket: aws.String(deploymentClient.Bucket),
+	_, err := backend.Client.ListObjectsV2(context.TODO(), &s3.ListObjectsV2Input{
+		Bucket: aws.String(backend.Bucket),
 	})
 	if err != nil {
 		log.Fatalf("Error while connecting to the deplpyment bucket %v\n ", err)
 	}
-	log.Infoln("Connection established to deployment bucket", deploymentClient.Bucket)
-	return deploymentClient
+	log.Infoln("Connection established to deployment bucket", backend.Bucket)
+	return backend
 }

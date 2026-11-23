@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -8,30 +9,31 @@ import (
 )
 
 func getMetadataConfig() MetadataS3Config {
-	parseConfig()
 	S3Conf := configS3Storage()
 	return S3Conf
 }
 
 func getDeploymentConfig() DeployS3Config {
-	parseConfig()
 	dS3Conf := deployS3Storage()
 	return dS3Conf
 }
 
-type MetadataS3Config struct {
-	URL               string
-	Port              int
-	AccessKey         string
-	SecretKey         string
-	Bucket            string
-	Region            string
-	Chunksize         int
-	Cacert            string
-	WebMetadataFolder string
+func setLogLevel() {
+	switch viper.GetString("loglevel") {
+	case "debug":
+		log.SetLevel(log.DebugLevel)
+	case "info":
+		log.SetLevel(log.InfoLevel)
+	case "warn":
+		log.SetLevel(log.WarnLevel)
+	case "error":
+		log.SetLevel(log.ErrorLevel)
+	default:
+		log.SetLevel(log.InfoLevel)
+	}
 }
 
-type DeployS3Config struct {
+type S3Config struct {
 	URL       string
 	Port      int
 	AccessKey string
@@ -42,73 +44,71 @@ type DeployS3Config struct {
 	Cacert    string
 }
 
-func configS3Storage() MetadataS3Config {
-	s3 := MetadataS3Config{}
-	s3.URL = viper.GetString("S3MetadataBucket.url")
-	s3.AccessKey = viper.GetString("S3MetadataBucket.accesskey")
-	s3.SecretKey = viper.GetString("S3MetadataBucket.secretkey")
-	s3.Bucket = viper.GetString("S3MetadataBucket.bucket")
-	s3.Port = 9000
-	s3.WebMetadataFolder = viper.GetString("S3MetadataBucket.WebMetadataFolder")
-	if viper.IsSet("s3.port") {
-		s3.Port = viper.GetInt("S3MetadataBucket.port")
-	}
+type MetadataS3Config struct {
+	S3Config
+	WebMetadataFolder string
+}
 
-	if viper.IsSet("s3.region") {
-		s3.Region = viper.GetString("S3MetadataBucket.region")
-	}
+type DeployS3Config struct {
+	S3Config
+}
 
-	if viper.IsSet("s3.chunksize") {
-		s3.Chunksize = viper.GetInt("S3MetadataBucket.chunksize") * 1024 * 1024
-	}
+func s3Config(prefix string) S3Config {
+	s3 := S3Config{}
+	s3.URL = viper.GetString(prefix + ".url")
+	s3.AccessKey = viper.GetString(prefix + ".accesskey")
+	s3.SecretKey = viper.GetString(prefix + ".secretkey")
+	s3.Bucket = viper.GetString(prefix + ".bucket")
 
-	if viper.IsSet("s3.cacert") {
-		s3.Cacert = viper.GetString("S3MetadataBucket.cacert")
-	}
+	viper.SetDefault(prefix+".port", 9000)
+	viper.SetDefault(prefix+".region", "us-east-1")
+
+	s3.Port = viper.GetInt(prefix + ".port")
+
+	s3.Region = viper.GetString(prefix + ".region")
+
+	s3.Chunksize = viper.GetInt("S3MetadataBucket.chunksize") * 1024 * 1024
+
+	s3.Cacert = viper.GetString("S3MetadataBucket.cacert")
 
 	return s3
+}
+
+func configS3Storage() MetadataS3Config {
+	m := MetadataS3Config{
+		s3Config("S3MetadataBucket"),
+		viper.GetString("S3MetadataBucket.WebMetadataFolder"),
+	}
+
+	return m
 }
 
 func deployS3Storage() DeployS3Config {
-	s3 := DeployS3Config{}
-	s3.URL = viper.GetString("S3DeploymentBucket.url")
-	s3.AccessKey = viper.GetString("S3DeploymentBucket.accesskey")
-	s3.SecretKey = viper.GetString("S3DeploymentBucket.secretkey")
-	s3.Bucket = viper.GetString("S3DeploymentBucket.bucket")
-	s3.Port = 9000
-	if viper.IsSet("s3.port") {
-		s3.Port = viper.GetInt("S3DeploymentBucket.port")
-	}
-
-	if viper.IsSet("s3.region") {
-		s3.Region = viper.GetString("S3DeploymentBucket.region")
-	}
-
-	if viper.IsSet("s3.chunksize") {
-		s3.Chunksize = viper.GetInt("S3DeploymentBucket.chunksize") * 1024 * 1024
-	}
-
-	if viper.IsSet("s3.cacert") {
-		s3.Cacert = viper.GetString("S3DeploymentBucket.cacert")
+	s3 := DeployS3Config{
+		s3Config("S3DeploymentBucket"),
 	}
 
 	return s3
 }
 
-func parseConfig() {
+func prepareConfig() error {
 	viper.SetConfigName("config")
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetConfigType("yaml")
+
 	if viper.IsSet("configFile") {
 		viper.SetConfigFile(viper.GetString("configFile"))
 	}
+
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			log.Infoln("No config file found, using ENVs only")
 		} else {
-			log.Fatalf("Error when reading config file: '%s'", err)
+			return fmt.Errorf("error when reading config file: %w", err)
 		}
 	}
+
+	return nil
 }

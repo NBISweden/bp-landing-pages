@@ -57,7 +57,7 @@ type DownloadStats struct {
 	Failed           int
 }
 
-func metadataDownloader(metadataclient *MetadataBackend) error {
+func metadataDownloader(metadataclient *Backend) error {
 
 	var (
 		Bucket         = metadataclient.Bucket // Download from this bucket
