@@ -20,7 +20,7 @@
       {{ $page := . -}} {{ range .Site.Menus.main -}}
       <li
         id="menu-item"
-        class='menu-item {{ if eq ("/") (.RelPermalink) -}}menu-item-type-custom menu-item-object-custom{{ else -}}menu-item-type-post_type menu-item-object-page{{ end -}} {{ if $page.IsMenuCurrent "main" . -}}current-menu-item current_page_item{{ end -}}'
+        class='menu-item {{ if eq ("/") (.RelPermalink) -}}menu-item-type-custom menu-item-object-custom{{ else -}}menu-item-type-post_type menu-item-object-page{{ end }} {{ if $page.IsMenuCurrent "main" . -}}current-menu-item current_page_item{{ end -}}'
       >
         <a href="{{ .RelPermalink -}}">{{ .Name -}}</a>
       </li>

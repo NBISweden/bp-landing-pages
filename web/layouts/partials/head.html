@@ -33,7 +33,7 @@
     <meta property="twitter:description" content="{{ $metaDescription -}}">
     <link rel="shortcut icon" href="{{ "img/favicon.ico" | relURL -}}">
 
-    <title data-pagefind-meta="title" >{{ if .Title -}}{{ .Title -}} | {{ .Site.Params.SEOTitle -}}{{ else -}}{{ .Site.Params.SEOTitle -}}{{ end -}}</title>
+    <title data-pagefind-meta="title" >{{ if .Title -}}{{ .Title }} | {{ .Site.Params.SEOTitle -}}{{ else -}}{{ .Site.Params.SEOTitle -}}{{ end -}}</title>
 
     <link rel="canonical" href="{{ .RelPermalink -}}">
 
