@@ -1,8 +1,11 @@
 baseurl = "https://datasets.bigpicture.eu"
 title = "Bigpicture datasets"
-languageCode = "en-us"
 
 uglyURLs = true
+
+defaultContentLanguage = 'en'
+
+
 [params]
   header_image = "img/bigpicture-banner.jpg"
   SEOTitle = "Bigpicture datasets"
