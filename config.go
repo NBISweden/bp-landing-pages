@@ -67,9 +67,9 @@ func s3Config(prefix string) S3Config {
 
 	s3.Region = viper.GetString(prefix + ".region")
 
-	s3.Chunksize = viper.GetInt("S3MetadataBucket.chunksize") * 1024 * 1024
+	s3.Chunksize = viper.GetInt(prefix+".chunksize") * 1024 * 1024
 
-	s3.Cacert = viper.GetString("S3MetadataBucket.cacert")
+	s3.Cacert = viper.GetString(prefix + ".cacert")
 
 	return s3
 }

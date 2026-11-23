@@ -11,7 +11,7 @@ func main() {
 
 	err := prepareConfig()
 	if err != nil {
-		log.Fatalf("failed to initiatie configuration: %v", err)
+		log.Fatalf("failed to initiate configuration: %v", err)
 	}
 
 	setLogLevel()
