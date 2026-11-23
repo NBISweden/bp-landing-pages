@@ -1,245 +1,245 @@
-{{ define "main" }}
+{{ define "main" -}}
 <div>
   <div class="datasets-crumbs">
     <a href="javascript:history.back()">Back</a>
   </div>
   <header>
     <div class="meta">
-      <h1>{{ .Params.dataset_title }}</h1>
-      <strong>Doi:</strong> {{ .Params.doi }}<br />
-      <strong>Year:</strong> {{ .Params.year_of_submission }}<br />
+      <h1>{{ .Params.dataset_title -}}</h1>
+      <strong>Doi:</strong> {{ .Params.doi -}}<br />
+      <strong>Year:</strong> {{ .Params.year_of_submission -}}<br />
     </div>
   </header>
   <div class="grid">
     <div>
       <div class="panel">
         <h3>Description</h3>
-        <p>{{ .Params.dataset_description }}</p>
+        <p>{{ .Params.dataset_description -}}</p>
       </div>
       <div class="panel">
         <h3>Dataset Overview</h3>
         <table class="dataset-info-table">
-          {{ if .Params.dataset_title }}
+          {{ if .Params.dataset_title -}}
           <tr>
             <th>Title</th>
-            <td>{{ .Params.dataset_title }}</td>
+            <td>{{ .Params.dataset_title -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.dataset_short_name }}
+          {{ end -}}
+          {{ if .Params.dataset_short_name -}}
           <tr>
             <th>Short name</th>
-            <td>{{ .Params.dataset_short_name }}</td>
+            <td>{{ .Params.dataset_short_name -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.age_at_extractions }}
+          {{ end -}}
+          {{ if .Params.age_at_extractions -}}
           <tr>
             <th>Age at extraction</th>
             <td>
-              {{ range .Params.age_at_extractions }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.age_at_extractions -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.anatomical_sites }}
+          {{ end -}}
+          {{ if .Params.anatomical_sites -}}
           <tr>
             <th>Anatomical site</th>
             <td>
-              {{ range .Params.anatomical_sites }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.anatomical_sites -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.animal_species }}
+          {{ end -}}
+          {{ if .Params.animal_species -}}
           <tr>
             <th>Animal species</th>
             <td>
-              {{ range .Params.animal_species }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.animal_species -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.medical_diagnoses }}
+          {{ end -}}
+          {{ if .Params.medical_diagnoses -}}
           <tr>
             <th>Medical diagnosis</th>
             <td>
-              {{ range .Params.medical_diagnoses }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.medical_diagnoses -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.specimen_types }}
+          {{ end -}}
+          {{ if .Params.specimen_types -}}
           <tr>
             <th>Specimen types</th>
             <td>
-              {{ range .Params.specimen_types }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.specimen_types -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.image_types }}
+          {{ end -}}
+          {{ if .Params.image_types -}}
           <tr>
             <th>Image type</th>
             <td>
-              {{ range .Params.image_types }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.image_types -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.extraction_methods }}
+          {{ end -}}
+          {{ if .Params.extraction_methods -}}
           <tr>
             <th>Extraction method</th>
             <td>
-              {{ range .Params.extraction_methods }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.extraction_methods -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.image_resolutions }}
+          {{ end -}}
+          {{ if .Params.image_resolutions -}}
           <tr>
             <th>Image resolution</th>
             <td>
-              {{ range .Params.image_resolutions }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.image_resolutions -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.geographical_areas }}
+          {{ end -}}
+          {{ if .Params.geographical_areas -}}
           <tr>
             <th>Geographical areas</th>
             <td>
-              {{ range .Params.geographical_areas }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.geographical_areas -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.stainings }}
+          {{ end -}}
+          {{ if .Params.stainings -}}
           <tr>
             <th>Staining</th>
             <td>
               <div class="collapsible-list" data-collapsible-max="5">
-                {{ range .Params.stainings }}
-                <span class="collapsible-item">{{ . }}</span>
-                {{ end }}
+                {{ range .Params.stainings -}}
+                <span class="collapsible-item">{{ . -}}</span>
+                {{ end -}}
               </div>
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.cite_as }}
+          {{ end -}}
+          {{ if .Params.cite_as -}}
           <tr>
             <th>Cite as</th>
-            <td>{{ .Params.cite_as }}</td>
+            <td>{{ .Params.cite_as -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.keywords }}
+          {{ end -}}
+          {{ if .Params.keywords -}}
           <tr>
             <th>Keywords</th>
             <td>
-              {{ range .Params.keywords }}
-              <p>{{ . }}</p>
-              {{ end }}
+              {{ range .Params.keywords -}}
+              <p>{{ . -}}</p>
+              {{ end -}}
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.year_of_submission }}
+          {{ end -}}
+          {{ if .Params.year_of_submission -}}
           <tr>
             <th>Year</th>
-            <td>{{ .Params.year_of_submission }}</td>
+            <td>{{ .Params.year_of_submission -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.doi }}
+          {{ end -}}
+          {{ if .Params.doi -}}
           <tr>
             <th>DOI</th>
             <td>
-              <a href="https://doi.org/{{ .Params.doi }}">{{ .Params.doi }}</a>
+              <a href="https://doi.org/{{ .Params.doi -}}">{{ .Params.doi -}}</a>
             </td>
           </tr>
-          {{ end }}
-          {{ if .Params.dataset_version }}
+          {{ end -}}
+          {{ if .Params.dataset_version -}}
           <tr>
             <th>Version</th>
-            <td>{{ .Params.dataset_version }}</td>
+            <td>{{ .Params.dataset_version -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.number_of_wsis }}
+          {{ end -}}
+          {{ if .Params.number_of_wsis -}}
           <tr>
             <th>Number of WSIs</th>
-            <td>{{ .Params.number_of_wsis }}</td>
+            <td>{{ .Params.number_of_wsis -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.number_of_cases }}
+          {{ end -}}
+          {{ if .Params.number_of_cases -}}
           <tr>
             <th>Number of cases</th>
-            <td>{{ .Params.number_of_cases }}</td>
+            <td>{{ .Params.number_of_cases -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.number_of_biological_beings }}
+          {{ end -}}
+          {{ if .Params.number_of_biological_beings -}}
           <tr>
             <th>Number of biological beings</th>
-            <td>{{ .Params.number_of_biological_beings }}</td>
+            <td>{{ .Params.number_of_biological_beings -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.number_of_annotations }}
+          {{ end -}}
+          {{ if .Params.number_of_annotations -}}
           <tr>
             <th>Annotations</th>
-            <td>{{ .Params.number_of_annotations }}</td>
+            <td>{{ .Params.number_of_annotations -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.dataset_size }}
+          {{ end -}}
+          {{ if .Params.dataset_size -}}
           <tr>
             <th>Size</th>
-            <td data-size-value="{{ .Params.dataset_size }}">{{ .Params.dataset_size }}</td>
+            <td data-size-value="{{ .Params.dataset_size -}}">{{ .Params.dataset_size -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.center_name }}
+          {{ end -}}
+          {{ if .Params.center_name -}}
           <tr>
             <th>Center name</th>
-            <td>{{ .Params.center_name }}</td>
+            <td>{{ .Params.center_name -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.metadata_standard_version }}
+          {{ end -}}
+          {{ if .Params.metadata_standard_version -}}
           <tr>
             <th>Metadata standard version</th>
-            <td>{{ .Params.metadata_standard_version }}</td>
+            <td>{{ .Params.metadata_standard_version -}}</td>
           </tr>
-          {{ end }}
+          {{ end -}}
         </table>
       </div>
       <div class="panel">
         <h3>Terms of Use</h3>
         <table class="dataset-info-table">
-          {{ if .Params.type_of_access }}
+          {{ if .Params.type_of_access -}}
           <tr>
             <th>Type of access</th>
-            <td>{{ .Params.type_of_access }}</td>
+            <td>{{ .Params.type_of_access -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.access_approval_process }}
+          {{ end -}}
+          {{ if .Params.access_approval_process -}}
           <tr>
             <th>Access approval process</th>
-            <td>{{ .Params.access_approval_process }}</td>
+            <td>{{ .Params.access_approval_process -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.duration_of_use }}
+          {{ end -}}
+          {{ if .Params.duration_of_use -}}
           <tr>
             <th>Duration of use</th>
-            <td>{{ .Params.duration_of_use }}</td>
+            <td>{{ .Params.duration_of_use -}}</td>
           </tr>
-          {{ end }}
-          {{ if .Params.allowed_geographical_distribution }}
+          {{ end -}}
+          {{ if .Params.allowed_geographical_distribution -}}
           <tr>
             <th>Allowed geographical distribution</th>
-            <td>{{ .Params.allowed_geographical_distribution }}</td>
+            <td>{{ .Params.allowed_geographical_distribution -}}</td>
           </tr>
-          {{ end }}
+          {{ end -}}
         </table>
       </div>
       <div class="panel">
@@ -255,35 +255,35 @@
       <div class="panel">
                  <div class="meta">
     <h3>Year</h3>
-    <strong>Doi:</strong> {{ .Params.doi }}<br/>
-    <strong>Year:</strong> {{ .Params.year_of_submission }}<br/>
-    <strong>Version:</strong> {{ .Params.dataset_version }}<br/>
+    <strong>Doi:</strong> {{ .Params.doi -}}<br/>
+    <strong>Year:</strong> {{ .Params.year_of_submission -}}<br/>
+    <strong>Version:</strong> {{ .Params.dataset_version -}}<br/>
  
   </div>
       <h3>Sample Images</h3>
 
         <div>
           <ul class="dataset-example-images" id="dataset-example-images">
-            {{range .Params.sample_images }}
-            <li><img src="{{.Site.BaseURL}}{{ .filename }}" /></li>
-            {{ end }}
+            {{range .Params.sample_images -}}
+            <li><img src="{{.Site.BaseURL}}{{ .filename -}}" /></li>
+            {{ end -}}
           </ul>
         </div>
        
         <div>
           <h3>Application</h3>
-        {{ if .Params.rems_access_link }}
-         <a href='{{ .Params.rems_access_link }}'><button>Apply for access</button></a>
-         {{ else }}
-            <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName }}"><button>Apply for access</button></a>
+        {{ if .Params.rems_access_link -}}
+         <a href='{{ .Params.rems_access_link -}}'><button>Apply for access</button></a>
+         {{ else -}}
+            <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName -}}"><button>Apply for access</button></a>
        
-          {{ end }}
+          {{ end -}}
       </div>
       </div>
     </aside>
   </div>
 
-  {{ .Content }}
+  {{ .Content -}}
 
   <link
     rel="stylesheet"
@@ -367,6 +367,6 @@
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.3.2/viewer.min.js"></script>
-<script src="{{ "js/datasets-single.js" | relURL }}"></script>
+<script src="{{ "js/datasets-single.js" | relURL -}}"></script>
 
-{{ end }}
+{{ end -}}
