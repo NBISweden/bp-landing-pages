@@ -44,6 +44,29 @@
     <script src="{{ . | absURL -}}"></script>
     {{ end -}}
 
+    <script defer="true">
+        var inIframe = false;
+        try {
+            inIframe = window.self !== window.top;
+        } catch (e) {
+            // If we get an exception here, it's security triggering because
+            // we're in an iframe
+            inIframe = true;
+        }
+
+        if (inIframe) {
+            document.documentElement.classList.add('iniframe');
+
+            const updateVertical = () => {
+                window.parent.postMessage({ type: 'iframeHeight',
+                height: document.documentElement.scrollHeight }, '*');
+            };
+
+            // catch size changes
+            new ResizeObserver(updateVertical).observe(document.documentElement);
+            window.addEventListener('load', updateVertical);
+        }
+    </script>
 </head>
 
 

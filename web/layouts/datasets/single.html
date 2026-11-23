@@ -273,9 +273,9 @@
         <div>
           <h3>Application</h3>
         {{ if .Params.rems_access_link -}}
-         <a href='{{ .Params.rems_access_link -}}'><button>Apply for access</button></a>
+         <a href='{{ .Params.rems_access_link -}}' target="_blank"><button>Apply for access</button></a>
          {{ else -}}
-            <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName -}}"><button>Apply for access</button></a>
+            <a href="https://bp-rems.sd.csc.fi/apply-for?resource={{ .File.BaseFileName -}}" target="_blank"><button>Apply for access</button></a>
        
           {{ end -}}
       </div>
