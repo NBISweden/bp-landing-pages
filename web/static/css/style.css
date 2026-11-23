@@ -1272,3 +1272,7 @@ pre.policy {
     display: block;
   }
 }
+
+.iniframe .topnav {
+  display: none !important;
+}
