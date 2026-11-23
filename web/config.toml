@@ -4,7 +4,9 @@ title = "Bigpicture datasets"
 uglyURLs = true
 
 defaultContentLanguage = 'en'
-
+[languages]
+  [languages.en]
+    locale='en-US'
 
 [params]
   header_image = "img/bigpicture-banner.jpg"
