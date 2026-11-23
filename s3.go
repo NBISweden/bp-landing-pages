@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"net/http"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -11,15 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	log "github.com/sirupsen/logrus"
 )
-
-type MetadataBackend struct {
-	Client *s3.Client
-	Bucket string
-}
-type DeploymentBackend struct {
-	Client *s3.Client
-	Bucket string
-}
 
 type Backend struct {
 	Client *s3.Client
@@ -30,7 +20,6 @@ func getBackend(s3config S3Config) *Backend {
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion(s3config.Region),
-		config.WithHTTPClient(&http.Client{Transport: &http.Transport{}}),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(s3config.AccessKey, s3config.SecretKey, "")),
 	)
 
