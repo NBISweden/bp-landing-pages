@@ -23,11 +23,11 @@ type datasetIDExtractor struct {
 var datasetIDExtractors = []datasetIDExtractor{
 	{
 		name:    "standard aa-Dataset key",
-		pattern: regexp.MustCompile(`(aa-Dataset-[a-z0-9]+-[a-z0-9]+)`),
+		pattern: regexp.MustCompile(`(aa-[dD]ataset-[a-z0-9]+-[a-z0-9]+)`),
 	},
 	{
 		name:    "standard cc-Dataset key",
-		pattern: regexp.MustCompile(`(cc-Dataset-[a-z0-9]+-[a-z0-9]+)`),
+		pattern: regexp.MustCompile(`(cc-[dD]ataset-[a-z0-9]+-[a-z0-9]+)`),
 	},
 }
 
